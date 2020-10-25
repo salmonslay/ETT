@@ -4,6 +4,7 @@ public class Card : ScriptableObject
 {
     public CardProperties.Color Color;
     public CardProperties.Type Type;
+    public int perGame;
     private Texture CardTexture;
     public int number;
     public string ID;
@@ -16,7 +17,8 @@ public class Card : ScriptableObject
             ID = $"{Color}_{number}";
         else
             ID = $"{Color}_{Type}";
-        CardTexture = Resources.Load<Texture>(ID);
-        obj
+        CardTexture = Resources.Load<Texture>($"Cards/{ID}");
+        Object.transform.Find("Front").GetComponent<Renderer>().material.mainTexture = CardTexture;
+        Object.name = ID;
     }
 }

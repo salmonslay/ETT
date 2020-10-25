@@ -20,7 +20,7 @@ public class Core : MonoBehaviour
         foreach(Card Card in Cards)
         {
             Card.InitCard((GameObject)Instantiate(Resources.Load($"Prefabs/Card")));
-            Card.Object.transform.position = new Vector3(UnityEngine.Random.Range(0, 100), UnityEngine.Random.Range(0, 100), UnityEngine.Random.Range(0, 100));
+            Card.Object.transform.position = new Vector3(0, 0, UnityEngine.Random.Range(0, 400));
         }
         st.Stop();
         Debug.Log($"Core/Start: Cards initiated. Took {st.ElapsedMilliseconds}ms to execute.");

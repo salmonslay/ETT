@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color: 0
   Type: 3
+  perGame: 2
   number: 0
+  ID: Blue_Draw
+  Object: {fileID: 0}
