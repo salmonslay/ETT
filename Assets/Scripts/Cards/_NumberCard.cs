@@ -2,7 +2,7 @@
 
 [CreateAssetMenu(fileName = "Number", menuName = "UNO/Number", order = 1)]
 [System.Serializable]
-public class _NumberCard : CardBase
+public class _NumberCard : Card
 {
-    public int number;
+    
 }
