@@ -17,7 +17,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             DontDestroyOnLoad(gameObject);
         }
         GameObject.Find("Canvas/name").GetComponent<InputField>().text = PlayerPrefs.GetString("username", "Player");
-        if(Application.isEditor) GameObject.Find("Canvas/create room").GetComponent<InputField>().text = "dev";
     }
     public override void OnConnectedToMaster()
     {
@@ -40,9 +39,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         SceneManager.LoadScene(1);
-    }
-    private void Start()
-    {
-        PhotonNetwork.ConnectUsingSettings();
     }
 }

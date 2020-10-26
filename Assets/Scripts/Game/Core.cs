@@ -14,19 +14,18 @@ public class Core : MonoBehaviourPun
 {
     public Card[] Cards; //One of each
     public Card[] FullDeck = new Card[108]; //Contains exactly as many cards as it should
-    public List<Card> MyDeck = new List<Card>();
     public OwnStack Stack;
-
-   public static Core Instance;
-
+    public List<string> PlayerList = new List<string>();
+    public int playerCount;
     /// <summary>
     /// Starts pre-loading the game and cards.
     /// </summary>
     private void Start()
     {
+        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName);
+        GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
         Stopwatch st = new Stopwatch();
         st.Start();
-        Instance = this;
         int j = 0;
         foreach(Card Card in Cards)
         {
@@ -46,24 +45,39 @@ public class Core : MonoBehaviourPun
     [PunRPC]
     private void ConfigureGame()
     {
-        for (int i = 0; i < 7; i++)
-        {
-            MyDeck.Add(FullDeck[UnityEngine.Random.Range(0, 108)]);
-        }
-        Stack.UpdateStack();
+        StartCoroutine(Stack.AddCards(7));
+        Destroy(GameObject.Find("Canvas/StartButton"));
     }
     /// <summary>
     /// Called by master client.
-    /// Creates a
+    /// Starts the game for everyone
     /// </summary>
     public void StartButton()
     {
         photonView.RPC("ConfigureGame", RpcTarget.All);
-        Destroy(GameObject.Find("Canvas/StartButton"));
-    }
-    public void DrawDeck()
-    {
 
+        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
+    }
+
+    /// <summary>
+    /// Runs on master client in lobbies
+    /// </summary>
+    [PunRPC]
+    public void AddPlayer(string name)
+    {
+        PlayerList.Add(name);
+        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
+    }
+    /// <summary>
+    /// Runs when game starts
+    /// </summary>
+    [PunRPC]
+    public void DownloadPlayerlist(string namelist)
+    {
+        string[] Players = namelist.Split('#');
+        PlayerList = Players.ToList();
+        GameObject.Find("Canvas/Players").GetComponent<Text>().text = $"Players ({Players.Length})\n{string.Join("\n", Players)}";
+        playerCount = Players.Length;
     }
 }
 
