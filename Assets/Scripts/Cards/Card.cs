@@ -8,17 +8,15 @@ public class Card : ScriptableObject
     private Texture CardTexture;
     public int number;
     public string ID;
-    public GameObject Object;
+    public bool isDropped;
 
-    public void InitCard(GameObject obj)
+    public void InitCard()
     {
-        Object = obj;
         if (Type == CardProperties.Type.Number)
             ID = $"{Color}_{number}";
         else
             ID = $"{Color}_{Type}";
         CardTexture = Resources.Load<Texture>($"Cards/{ID}");
-        Object.transform.Find("Front").GetComponent<Renderer>().material.mainTexture = CardTexture;
-        Object.name = ID;
+        //Object.GetComponent<Renderer>().material.mainTexture = CardTexture;
     }
 }
