@@ -15,6 +15,7 @@ public class Core : MonoBehaviourPun
     public Card[] Cards; //One of each
     public Card[] FullDeck = new Card[108]; //Contains exactly as many cards as it should
     public List<Card> MyDeck = new List<Card>();
+    public OwnStack Stack;
 
    public static Core Instance;
 
@@ -49,6 +50,7 @@ public class Core : MonoBehaviourPun
         {
             MyDeck.Add(FullDeck[UnityEngine.Random.Range(0, 108)]);
         }
+        Stack.UpdateStack();
     }
     /// <summary>
     /// Called by master client.
