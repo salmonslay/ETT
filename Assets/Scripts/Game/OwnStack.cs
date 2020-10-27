@@ -21,7 +21,7 @@ public class OwnStack : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.K)) ToggleFocus();
-        if (Input.GetKeyDown(KeyCode.B)) AddCard();
+        if (Input.GetKeyDown(KeyCode.B)) StartCoroutine(AddCards(1));
     }
     public void ToggleFocus(bool forceShow = false)
     {

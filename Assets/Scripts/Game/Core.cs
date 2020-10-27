@@ -14,7 +14,7 @@ public class Core : MonoBehaviourPun
     public OwnStack Stack;
     public List<string> PlayerList = new List<string>();
     public int playerCount;
-    public GameCore GC;
+    private GameCore GC;
 
     
 
@@ -23,6 +23,7 @@ public class Core : MonoBehaviourPun
     /// </summary>
     private void Start()
     {
+        GC = GetComponent<GameCore>();
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName);
         GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
         Stopwatch st = new Stopwatch();
@@ -39,6 +40,8 @@ public class Core : MonoBehaviourPun
         }
         st.Stop();
         Debug.Log($"Core/Start: Cards initiated. Took {st.ElapsedMilliseconds}ms to execute.");
+        foreach(GameObject c in GameObject.FindGameObjectsWithTag("MyCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.0001f);
+        foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
 
     /// <summary>
@@ -49,6 +52,8 @@ public class Core : MonoBehaviourPun
     {
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
+
+        GC.PlacePlayers();
     }
 
     /// <summary>

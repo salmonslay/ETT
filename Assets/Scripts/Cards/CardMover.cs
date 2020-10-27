@@ -19,5 +19,6 @@ public class CardMover : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, destObj.position, speed * 11.7f * Time.deltaTime);
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(destObj.lossyScale.x, destObj.lossyScale.x* 1.4494f, 0.0001f), speed * 4 * Time.deltaTime);
         if (transform.position == destObj.position) speed = 15;
+        else speed = UnityEngine.Random.Range(0.9f, 1.1f);
     }
 }
