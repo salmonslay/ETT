@@ -44,7 +44,7 @@ public class OwnStack : MonoBehaviour
     private Card AddCard()
     {
         Card randomized = CoreInstance.FullDeck[UnityEngine.Random.Range(0, 108)];
-        GameObject card = Instantiate(Resources.Load<GameObject>("Prefabs/TopStack"));
+        GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
         card.GetComponent<Renderer>().material.mainTexture = Resources.Load<Texture>($"Cards/{randomized.ID}");
         card.GetComponent<CardMover>().dest = $"MyCards/Card ({MyDeck.Count})";
         MyDeck.Add(randomized);
