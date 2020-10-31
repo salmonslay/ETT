@@ -14,7 +14,7 @@ public class Core : MonoBehaviourPun
     public OwnStack Stack;
     public List<string> PlayerList = new List<string>();
     public int playerCount;
-    private GameCore GC;
+    public GameCore GC;
 
     
 
@@ -50,21 +50,11 @@ public class Core : MonoBehaviourPun
     [PunRPC]
     private void ConfigureGame()
     {
+        GC.SortPlayerList();
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
 
-        GC.PlacePlayers();
-    }
-
-    /// <summary>
-    /// Called by master client.
-    /// Starts the game for everyone
-    /// </summary>
-    public void StartButton()
-    {
-        photonView.RPC("ConfigureGame", RpcTarget.All);
-
-        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
+        
     }
 
     /// <summary>
@@ -89,4 +79,16 @@ public class Core : MonoBehaviourPun
         GameObject.Find("Canvas/Players").GetComponent<Text>().text = $"Room: {PhotonNetwork.CurrentRoom.Name}\nMy ID: {Stack.myID}\nPlayers ({Players.Length})\n{string.Join("\n", Players)}";
         playerCount = Players.Length;
     }
+    #region Master
+    /// <summary>
+    /// Starts the game for everyone
+    /// </summary>
+    public void StartButton()
+    {
+        photonView.RPC("ConfigureGame", RpcTarget.All);
+
+        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
+    }
+
+    #endregion
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MyCard
   - PlayerName
+  - OtherCards
   layers:
   - Default
   - TransparentFX
