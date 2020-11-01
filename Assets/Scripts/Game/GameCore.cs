@@ -10,7 +10,7 @@ public class GameCore : MonoBehaviourPun
     public string currentPlayerName;
     public int currentPlayerIndex;
     public bool isReverse = false;
-    public readonly int[][] PlayOrder = new int[][]
+    public readonly int[][] PlayOrders = new int[][]
     {
         new int[]{ -1, 0 }, //2p
         new int[]{ -1, 1, 0} , //3p
@@ -19,6 +19,8 @@ public class GameCore : MonoBehaviourPun
         new int[]{ -1, 1, 4, 0, 3, 2 }, //6p
         new int[]{ -1, 1, 4, 5, 0, 3, 2 } //7p
     };
+    //will be one of those above
+    public int[] PlayOrder;
 
     
 
@@ -38,12 +40,22 @@ public class GameCore : MonoBehaviourPun
         Core.PlayerList.RemoveRange(0, Core.Stack.myID);
         Core.PlayerList.AddRange(namesBefore);
         GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text = string.Join(", ", Core.PlayerList);
+        PlayOrder = PlayOrders[Core.PlayerList.Count - 1];
         for (int i = 1; i < Core.PlayerList.Count; i++)
         {
-            GameObject.Find($"OtherCards ({PlayOrder[Core.PlayerList.Count - 1][i]})/Canvas/Text").GetComponent<Text>().text = $"{Core.PlayerList[i]} ({i})";
-            GameObject.Find($"OtherCards ({PlayOrder[Core.PlayerList.Count - 1][i]})").GetComponent<Player>().name = Core.PlayerList[i];
-            GameObject.Find($"OtherCards ({PlayOrder[Core.PlayerList.Count - 1][i]})").GetComponent<Player>().destination = $"OtherCards ({PlayOrder[Core.PlayerList.Count - 1][i]})";
+            GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/Text").GetComponent<Text>().text = $"{Core.PlayerList[i]} ({i})";
+            GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().name = Core.PlayerList[i];
+            GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().destination = $"OtherCards ({PlayOrder[i]})";
         }
+    }
+    /// <summary>
+    /// Changes current player 
+    /// </summary>
+    public void NextPlayer()
+    {
+        currentPlayerIndex += isReverse ? -1 : 1;
+        if (currentPlayerIndex == PlayOrder.Length) currentPlayerIndex = 0;
+        if (currentPlayerIndex == -1) currentPlayerIndex = PlayOrder[PlayOrder.Length - 1];
     }
     /// <summary>
     /// Variables controlled and method ran by the Game Master

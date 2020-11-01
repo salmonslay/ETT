@@ -74,10 +74,11 @@ public class Core : MonoBehaviourPun
     public void DownloadPlayerlist(string namelist)
     {
         string[] Players = namelist.Split('#');
+        GameObject.Find("Canvas/Players").GetComponent<Text>().text = $"Room: <b>{PhotonNetwork.CurrentRoom.Name}</b>\nPlayers ({Players.Length}):\n- <b>{string.Join("</b>\n- <b>", Players)}</b>";
+
         Stack.myID = Array.IndexOf(Players, PhotonNetwork.NickName);
-        PlayerList = Players.ToList();
-        GameObject.Find("Canvas/Players").GetComponent<Text>().text = $"Room: {PhotonNetwork.CurrentRoom.Name}\nMy ID: {Stack.myID}\nPlayers ({Players.Length})\n{string.Join("\n", Players)}";
         playerCount = Players.Length;
+        PlayerList = Players.ToList();
     }
     #region Master
     /// <summary>

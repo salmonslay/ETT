@@ -48,12 +48,20 @@ public class OwnStack : MonoBehaviourPun
             else gameObject.transform.Find($"Card ({i})").transform.localScale = Vector3.zero;
         }
     }
+    /// <summary>
+    /// Puts a card on the stack
+    /// </summary>
+    public void PlaceCard()
+    {
 
+    }
+    /// <summary>
+    /// Adds one card to the deck, and asks everyone to play the animation for it
+    /// </summary>
     public void AddCard()
     {
         Card randomized = Core.FullDeck[UnityEngine.Random.Range(0, 108)];
-        //PlayCardAnimation(randomized.ID, PhotonNetwork.NickName);
-        this.photonView.RPC("PlayCardAnimation", RpcTarget.Others, randomized.ID, PhotonNetwork.NickName);
+        this.photonView.RPC("PlayTakeCardAnimation", RpcTarget.Others, randomized.ID, PhotonNetwork.NickName);
 
         GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
         CardObject cardObject = card.GetComponent<CardObject>();
@@ -65,7 +73,7 @@ public class OwnStack : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void PlayCardAnimation(string cardID, string user)
+    public void PlayTakeCardAnimation(string user)
     {
         GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("OtherCards"))

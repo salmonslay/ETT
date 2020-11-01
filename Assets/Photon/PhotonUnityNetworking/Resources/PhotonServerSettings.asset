@@ -44,6 +44,7 @@ MonoBehaviour:
   - AddPlayer
   - DownloadPlayerlist
   - PlayCardAnimation
+  - PlayTakeCardAnimation
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
