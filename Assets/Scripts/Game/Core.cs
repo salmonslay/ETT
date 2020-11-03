@@ -28,6 +28,7 @@ public class Core : MonoBehaviourPun
         GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
         Stopwatch st = new Stopwatch();
         st.Start();
+
         int j = 0;
         foreach (Card Card in Cards)
         {
@@ -42,6 +43,17 @@ public class Core : MonoBehaviourPun
         Debug.Log($"Core/Start: Cards initiated. Took {st.ElapsedMilliseconds}ms to execute.");
         foreach(GameObject c in GameObject.FindGameObjectsWithTag("MyCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.0001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
+    }
+    /// <summary>
+    /// Get a card object from ID
+    /// </summary>
+    public Card CardFromID(string id)
+    {
+        foreach (Card c in Cards)
+        {
+            if (c.ID == id) return c;
+        }
+        return null;
     }
 
     /// <summary>
