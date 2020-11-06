@@ -41,7 +41,7 @@ public class Core : MonoBehaviourPun
         }
         st.Stop();
         Debug.Log($"Core/Start: Cards initiated. Took {st.ElapsedMilliseconds}ms to execute.");
-        foreach(GameObject c in GameObject.FindGameObjectsWithTag("MyCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.0001f);
+        foreach(GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.0001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
     /// <summary>
@@ -60,13 +60,19 @@ public class Core : MonoBehaviourPun
     /// Creates a deck for everyone
     /// </summary>
     [PunRPC]
-    private void ConfigureGame()
+    private void ConfigureGame(string topCardID)
     {
+        
         GC.SortPlayerList();
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
 
-        
+        //Create top card
+        GC.currentTop = CardFromID(topCardID);
+        GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
+        card.GetComponent<CardObject>().dest = "STACK";
+        card.GetComponent<Renderer>().material.mainTexture = Resources.Load<Texture>($"Cards/{GC.currentTop.ID}");
+
     }
 
     /// <summary>
@@ -98,7 +104,11 @@ public class Core : MonoBehaviourPun
     /// </summary>
     public void StartButton()
     {
-        photonView.RPC("ConfigureGame", RpcTarget.All);
+        //Picks a card that is a number
+        Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
+        while(first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
+
+        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID);
 
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
     }

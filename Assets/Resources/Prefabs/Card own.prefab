@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -1007386190840088738}
   m_Layer: 0
   m_Name: Card own
-  m_TagString: MyCard
+  m_TagString: TemplateCard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,10 +107,9 @@ GameObject:
   - component: {fileID: 8259147095696464578}
   - component: {fileID: 8559543797924654704}
   - component: {fileID: 6609505185048565133}
-  - component: {fileID: 5603125033473567406}
   m_Layer: 0
   m_Name: Back
-  m_TagString: MyCard
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,15 +177,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5603125033473567406
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9028346321231600702}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 759e0eed03c041546bad142df4529af4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

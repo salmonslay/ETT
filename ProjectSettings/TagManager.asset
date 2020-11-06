@@ -8,6 +8,7 @@ TagManager:
   - PlayerName
   - OtherCards
   - InStack
+  - TemplateCard
   layers:
   - Default
   - TransparentFX

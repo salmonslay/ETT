@@ -6,6 +6,7 @@ public class CardObject : MonoBehaviour
     public string dest = "NONE";
     private Transform destObj;
     private float speed = 1;
+    public bool moveInStack = false;
 
     //Stack offsets
     private Vector3 stackPos;
@@ -33,22 +34,24 @@ public class CardObject : MonoBehaviour
             transform.localScale = Vector3.Lerp(transform.localScale, stackSize, speed * 4 * Time.deltaTime);
             if (transform.position == stackPos)
             {
-                gameObject.tag = "InStack";
+                transform.rotation = stackRotation;
+                transform.localScale = stackSize;
                 gameObject.AddComponent<Rigidbody>();
                 gameObject.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                Destroy(GetComponent<Rigidbody>(), 10);
+                gameObject.GetComponent<Rigidbody>().mass = 1.5f;
+                Destroy(GetComponent<Rigidbody>(), 7);
                 dest = "NONE";
             }
         }
-        else
+        else //move to card pos
         {
             destObj = GameObject.Find(dest).transform;
 
             transform.position = Vector3.MoveTowards(transform.position, destObj.position, speed * 11.7f * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, destObj.rotation, speed * 1.6f * Time.deltaTime);
             transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(destObj.lossyScale.x, destObj.lossyScale.x * 1.4494f, 0.0001f), speed * 4 * Time.deltaTime);
-            Debug.Log(destObj.rotation);
             if (transform.position == destObj.position) speed = 15;
+            else if (moveInStack) speed = 0.35f;
             else speed = Random.Range(0.9f, 1.1f);
         }
     }
