@@ -56,6 +56,7 @@ public class OwnStack : MonoBehaviourPun
     /// </summary>
     public void PlaceCard(CardObject cardobj)
     {
+        PlayBoard.ResetColor();
         cardobj.gameObject.tag = "InStack";
         Card card = cardobj.Card;
         cardobj.dest = "STACK";
@@ -73,6 +74,7 @@ public class OwnStack : MonoBehaviourPun
     [PunRPC]
     public void PlayPutCardAnimation(string user, string cardID)
     {
+        PlayBoard.ResetColor();
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("OtherCards"))
         {
             Player p = g.GetComponent<Player>();

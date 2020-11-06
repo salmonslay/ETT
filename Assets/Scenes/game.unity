@@ -10509,6 +10509,7 @@ GameObject:
   - component: {fileID: 1478797309}
   - component: {fileID: 1478797308}
   - component: {fileID: 1478797307}
+  - component: {fileID: 1478797311}
   m_Layer: 0
   m_Name: PlayField
   m_TagString: Untagged
@@ -10548,7 +10549,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 437d05d0e47b40b499a8c0bf8e3eb9f1, type: 2}
+  - {fileID: 2100000, guid: 36395198cd99a794b9c0c35bec2d807d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10595,6 +10596,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1478797311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478797306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58adaab74521c84aa05c64b9e6f73da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1491548008
 PrefabInstance:
   m_ObjectHideFlags: 0
