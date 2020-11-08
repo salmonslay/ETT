@@ -2,6 +2,7 @@
 
 public class PlayBoard : MonoBehaviour
 {
+    public static CardProperties.Color currentColor;
     private static Color current;
     private static Color Default = new Color(0.5283019f, 0.03737985f, 0.3395049f);
     
@@ -15,10 +16,12 @@ public class PlayBoard : MonoBehaviour
     public static void SetColor(CardProperties.Color c)
     {
         current = Colors[(int)c];
+        currentColor = c;
     }
     public static void ResetColor()
     {
         current = Default;
+        currentColor = CardProperties.Color.Wild;
     }
     private void Start()
     {
@@ -27,6 +30,6 @@ public class PlayBoard : MonoBehaviour
     private void Update()
     {
         if(GetComponent<Renderer>().material.color != current)
-        GetComponent<Renderer>().material.color = Color.Lerp(GetComponent<Renderer>().material.color, current, Mathf.PingPong(Time.time, 12));
+        GetComponent<Renderer>().material.color = Color.Lerp(GetComponent<Renderer>().material.color, current, Time.deltaTime);
     }
 }

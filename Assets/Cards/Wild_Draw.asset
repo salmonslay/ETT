@@ -16,5 +16,5 @@ MonoBehaviour:
   Type: 3
   perGame: 4
   number: 0
-  ID: Wild_Draw
-  Object: {fileID: 0}
+  ID: Green_Draw
+  isDropped: 0

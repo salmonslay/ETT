@@ -51,13 +51,14 @@ public class GameCore : MonoBehaviourPun
     }
 
     /// <summary>
-    /// Changes current player
+    /// Gets index of next player
     /// </summary>
-    private void NextPlayer()
+    public int NextPlayer()
     {
-        currentPlayerIndex += isReverse ? -1 : 1;
-        if (currentPlayerIndex == PlayOrder.Length) currentPlayerIndex = 0;
-        if (currentPlayerIndex == -1) currentPlayerIndex = PlayOrder[PlayOrder.Length - 1];
+        int x = isReverse ? currentPlayerIndex - 1 : currentPlayerIndex + 1;
+        if (x == PlayOrder.Length) x = 0;
+        if (x == -1) x = PlayOrder[PlayOrder.Length - 1];
+        return x;
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,20 +12,56 @@ public class OwnStack : MonoBehaviourPun
     public List<Card> MyDeck = new List<Card>();
     public Core Core;
 
+    //focused wild
+    private string oldPos;
+
+    private CardObject currentFocus;
+
+    public GameObject WildColorSelection;
+    public GameObject WildDrawSelection;
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") /*&& Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1*/)
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") && oldPos == null && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
             {
                 CardObject g = hit.transform.gameObject.GetComponent<CardObject>();
-                Debug.Log($"Placed card {g.Card.ID}");
-                PlaceCard(g);
+
+                if (g.Card.Color == CardProperties.Color.Wild)
+                {
+                    oldPos = g.dest;
+                    g.dest = "MyCards/Wild";
+                    if (g.Card.Type == CardProperties.Type.Draw) WildDrawSelection.SetActive(true);
+                    else WildColorSelection.SetActive(true);
+                    currentFocus = g;
+                }
+                else if (Card.IsMatch(Core.GC.currentTop, g.Card)) PutCard(g);
             }
         }
 
         if (Input.GetKeyDown(KeyCode.K)) ToggleFocus();
         if (Input.GetKeyDown(KeyCode.B)) StartCoroutine(AddCards(1));
+    }
+
+    /// <summary>
+    /// Called from game when user places color wild card
+    /// </summary>
+    public void PlaceWildCard(string color)
+    {
+        WildColorSelection.SetActive(false);
+        WildDrawSelection.SetActive(false);
+        if (color == "cancel") currentFocus.dest = oldPos;
+        else
+        {
+            CardProperties.Color c = CardProperties.Color.Red;
+            if (color == "green") c = CardProperties.Color.Green;
+            if (color == "yellow") c = CardProperties.Color.Yellow;
+            if (color == "blue") c = CardProperties.Color.Blue;
+            PlayBoard.SetColor(c);
+            PutCard(currentFocus);
+        }
+        oldPos = null;
     }
 
     public void ToggleFocus(bool forceShow = false)
@@ -54,15 +91,17 @@ public class OwnStack : MonoBehaviourPun
     /// <summary>
     /// Puts a card on the stack and removes it from your own deck
     /// </summary>
-    public void PlaceCard(CardObject cardobj)
+    public void PutCard(CardObject cardobj)
     {
-        PlayBoard.ResetColor();
         cardobj.gameObject.tag = "InStack";
         Card card = cardobj.Card;
         cardobj.dest = "STACK";
         cardobj.moveInStack = true;
+        Core.GC.currentTop = cardobj.Card;
         MyDeck.Remove(card);
+
         photonView.RPC("PlayPutCardAnimation", RpcTarget.Others, PhotonNetwork.NickName, card.ID);
+        photonView.RPC("PutCardAction", RpcTarget.All, card.ID);
         UpdateStack();
     }
 
@@ -74,18 +113,47 @@ public class OwnStack : MonoBehaviourPun
     [PunRPC]
     public void PlayPutCardAnimation(string user, string cardID)
     {
-        PlayBoard.ResetColor();
+        Core.GC.currentTop = Core.CardFromID(cardID);
+        if (Core.GC.currentTop.Color != CardProperties.Color.Wild) PlayBoard.SetColor(Core.GC.currentTop.Color);
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("OtherCards"))
         {
             Player p = g.GetComponent<Player>();
             if (p.name == user)
             {
-                GameObject card = GameObject.Find($"{user}#{p.cardAmount-1}");
+                GameObject card = GameObject.Find($"{user}#{p.cardAmount - 1}");
                 card.name = "dropped";
                 card.GetComponent<CardObject>().dest = $"STACK";
                 card.GetComponent<Renderer>().material.mainTexture = Resources.Load<Texture>($"Cards/{cardID}");
                 p.cardAmount--;
             }
+        }
+    }
+    /// <summary>
+    /// Runs action when place a card
+    /// </summary>
+    [PunRPC]
+    public void PutCardAction(string cardID)
+    {
+        Card card = Core.CardFromID(cardID);
+
+        //Take cards if you're next
+        if(card.Type == CardProperties.Type.Draw && Core.GC.PlayOrder[Core.GC.NextPlayer()] == -1)
+        {
+            if (card.Color == CardProperties.Color.Wild) StartCoroutine(AddCards(4));
+            else StartCoroutine(AddCards(2));
+        }
+        else if(card.Type == CardProperties.Type.Reverse)
+        {
+            Core.GC.isReverse = !Core.GC.isReverse;
+        }
+        if(card.Type == CardProperties.Type.Skip)
+        {
+            Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
+            Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
+        }
+        else
+        {
+            Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
         }
     }
 
@@ -114,7 +182,6 @@ public class OwnStack : MonoBehaviourPun
     [PunRPC]
     public void PlayTakeCardAnimation(string user)
     {
-        
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("OtherCards"))
         {
             Player p = g.GetComponent<Player>();
