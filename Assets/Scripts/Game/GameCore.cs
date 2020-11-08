@@ -41,12 +41,12 @@ public class GameCore : MonoBehaviourPun
         Core.PlayerList.RemoveRange(0, Core.Stack.myID);
         Core.PlayerList.AddRange(namesBefore);
         GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text = string.Join(", ", Core.PlayerList);
-        PlayOrder = PlayOrders[Core.PlayerList.Count - 1];
+        PlayOrder = PlayOrders[Core.PlayerList.Count - 2];
         for (int i = 1; i < Core.PlayerList.Count; i++)
         {
-            GameObject.Find($"OtherCards ({PlayOrder[i] - 1})/Canvas/Text").GetComponent<Text>().text = $"{Core.PlayerList[i]} ({i})";
-            GameObject.Find($"OtherCards ({PlayOrder[i] - 1})").GetComponent<Player>().name = Core.PlayerList[i];
-            GameObject.Find($"OtherCards ({PlayOrder[i] - 1})").GetComponent<Player>().destination = $"OtherCards ({PlayOrder[i] - 1})";
+            GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/Text").GetComponent<Text>().text = $"{Core.PlayerList[i]} ({i})";
+            GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().name = Core.PlayerList[i];
+            GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().destination = $"OtherCards ({PlayOrder[i]})";
         }
     }
 

@@ -28,8 +28,6 @@ public class Core : MonoBehaviourPun
         GC = GetComponent<GameCore>();
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName);
         GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
-        Stopwatch st = new Stopwatch();
-        st.Start();
 
         int j = 0;
         foreach (Card Card in Cards)
@@ -41,9 +39,9 @@ public class Core : MonoBehaviourPun
                 j++;
             }
         }
-        st.Stop();
-        Debug.Log($"Core/Start: Cards initiated. Took {st.ElapsedMilliseconds}ms to execute.");
-        foreach(GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.0001f);
+
+        //Hide template texts and cards
+        foreach(GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
     /// <summary>
@@ -62,7 +60,7 @@ public class Core : MonoBehaviourPun
     /// Creates a deck for everyone
     /// </summary>
     [PunRPC]
-    private void ConfigureGame(string topCardID)
+    private void ConfigureGame(string topCardID, string masterName)
     {
         
         GC.SortPlayerList();
@@ -75,6 +73,9 @@ public class Core : MonoBehaviourPun
         card.GetComponent<CardObject>().dest = "STACK";
         card.GetComponent<Renderer>().material.mainTexture = Resources.Load<Texture>($"Cards/{GC.currentTop.ID}");
 
+        GC.currentPlayerName = masterName;
+        GC.currentPlayerIndex = PlayerList.IndexOf(masterName);
+        Debug.Log($"Current player is {masterName} at index {GC.currentPlayerIndex} and spot {GC.PlayOrder[GC.currentPlayerIndex]}");
     }
 
     /// <summary>
@@ -110,7 +111,7 @@ public class Core : MonoBehaviourPun
         Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
         while(first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
 
-        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID);
+        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName);
 
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
     }
