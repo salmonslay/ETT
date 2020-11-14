@@ -1,5 +1,4 @@
 ﻿using Photon.Pun;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -101,7 +100,7 @@ public class OwnStack : MonoBehaviourPun
         MyDeck.Remove(card);
 
         photonView.RPC("PlayPutCardAnimation", RpcTarget.Others, PhotonNetwork.NickName, card.ID);
-        photonView.RPC("PutCardAction", RpcTarget.All, card.ID);
+        photonView.RPC("PutCardAction", RpcTarget.All, card.ID, (int)PlayBoard.currentColor);
         UpdateStack();
     }
 
@@ -114,7 +113,6 @@ public class OwnStack : MonoBehaviourPun
     public void PlayPutCardAnimation(string user, string cardID)
     {
         Core.GC.currentTop = Core.CardFromID(cardID);
-        if (Core.GC.currentTop.Color != CardProperties.Color.Wild) PlayBoard.SetColor(Core.GC.currentTop.Color);
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("OtherCards"))
         {
             Player p = g.GetComponent<Player>();
@@ -128,25 +126,27 @@ public class OwnStack : MonoBehaviourPun
             }
         }
     }
+
     /// <summary>
     /// Runs action when place a card
     /// </summary>
     [PunRPC]
-    public void PutCardAction(string cardID)
+    public void PutCardAction(string cardID, int color)
     {
         Card card = Core.CardFromID(cardID);
+        if (color != 4) PlayBoard.SetColor((CardProperties.Color)color);
 
         //Take cards if you're next
-        if(card.Type == CardProperties.Type.Draw && Core.GC.PlayOrder[Core.GC.NextPlayer()] == -1)
+        if (card.Type == CardProperties.Type.Draw && Core.GC.PlayOrder[Core.GC.NextPlayer()] == -1)
         {
             if (card.Color == CardProperties.Color.Wild) StartCoroutine(AddCards(4));
             else StartCoroutine(AddCards(2));
         }
-        else if(card.Type == CardProperties.Type.Reverse)
+        else if (card.Type == CardProperties.Type.Reverse)
         {
             Core.GC.isReverse = !Core.GC.isReverse;
         }
-        if(card.Type == CardProperties.Type.Skip)
+        if (card.Type == CardProperties.Type.Skip)
         {
             Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
             Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
@@ -204,7 +204,7 @@ public class OwnStack : MonoBehaviourPun
     /// <returns></returns>
     public IEnumerator AddCards(int amount, float delay = 0.15f)
     {
-        delay += UnityEngine.Random.Range(-0.10f, 0.05f);
+        delay += UnityEngine.Random.Range(-0.05f, 0.05f);
         for (int i = 0; i < amount; i++)
         {
             AddCard();
