@@ -35,7 +35,7 @@ public class Card : ScriptableObject
         if (inStack.Type == CardProperties.Type.Number && queued.number == inStack.number)
             return true;
         //Types match (and is not number)
-        if (inStack.Type != CardProperties.Type.Number && inStack.Type == queued.Type)
+        if (inStack.Type != CardProperties.Type.Number && inStack.Type != CardProperties.Type.Draw && inStack.Type == queued.Type)
             return true;
         if (PlayBoard.currentColor == queued.Color) 
             return true;
