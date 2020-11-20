@@ -28,7 +28,7 @@ public class Core : MonoBehaviourPun
     /// <summary>
     /// Starts pre-loading the game and cards.
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         int j = 0;
         foreach (Card Card in Cards)

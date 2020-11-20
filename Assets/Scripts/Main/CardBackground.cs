@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CardBackground : MonoBehaviour
 {
-    public static bool move = false;
     public Core Core;
     // Start is called before the first frame update
     void Start()
@@ -27,7 +26,7 @@ public class CardBackground : MonoBehaviour
     }
     IEnumerator StartMoving()
     {
-        yield return new WaitForSeconds(5.4f);
+        yield return new WaitForSeconds(5.2f);
         foreach (GameObject c in GameObject.FindGameObjectsWithTag("LEFT"))
         {
             c.transform.position = GameObject.Find(c.GetComponent<CardObject>().dest).transform.position;
