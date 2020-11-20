@@ -14,7 +14,9 @@ public class GameCore : MonoBehaviourPun
         new int[]{ -1, 1, 0, 2 }, //4p
         new int[]{ -1, 1, 0, 3, 2 }, //5p
         new int[]{ -1, 1, 4, 0, 3, 2 }, //6p
-        new int[]{ -1, 1, 4, 5, 0, 3, 2 } //7p
+        new int[]{ -1, 1, 4, 5, 0, 3, 2 }, //7p
+        new int[]{ -1, 1, 4, 5, 0, 6, 3, 2 }, //8p
+        new int[]{ -1, 1, 4, 5, 0, 6, 7, 3, 2 } //9p
     };
 
     //will be one of those above
