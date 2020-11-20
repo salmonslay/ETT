@@ -29,7 +29,7 @@ public class OwnStack : MonoBehaviourPun
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") && oldPos == null && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
             {
                 CardObject g = hit.transform.gameObject.GetComponent<CardObject>();
-
+                if (hasPut && !Settings.placeMultipleCards) return;
                 if (g.Card.Color == CardProperties.Color.Wild)
                 {
                     oldPos = g.dest;
@@ -52,7 +52,7 @@ public class OwnStack : MonoBehaviourPun
 
         if (Input.GetKeyDown(KeyCode.K)) ToggleFocus();
         if (Input.GetKeyDown(KeyCode.B)) StartCoroutine(AddCards(1));
-        if(Core.started)
+        if (Core.started)
         {
             Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
             Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
@@ -246,6 +246,7 @@ public class OwnStack : MonoBehaviourPun
             //play effect
         }
     }
+
     [PunRPC]
     public void AnnounceETT(bool success, string name)
     {

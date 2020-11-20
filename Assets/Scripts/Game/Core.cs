@@ -64,13 +64,14 @@ public class Core : MonoBehaviourPun
     /// Creates a deck for everyone
     /// </summary>
     [PunRPC]
-    private void ConfigureGame(string topCardID, string masterName)
+    private void ConfigureGame(string topCardID, string masterName, bool allowMultiPlace)
     {
         
         GC.SortPlayerList();
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
-
+        Destroy(GameObject.Find("Canvas/AllowMultipleCards"));
+        Settings.placeMultipleCards = allowMultiPlace;
         //Create top card
         GC.currentTop = CardFromID(topCardID);
         GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
@@ -116,7 +117,7 @@ public class Core : MonoBehaviourPun
         Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
         while(first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
 
-        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName);
+        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, Settings.placeMultipleCards);
 
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
     }

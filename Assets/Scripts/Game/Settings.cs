@@ -1,19 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine.UI;
 
-public class Settings : MonoBehaviour
+public class Settings : MonoBehaviourPun
 {
-    public static bool placeMultipleCards;
-    // Start is called before the first frame update
-    void Start()
+    public static bool placeMultipleCards = true;
+    public Toggle t_placeMultipleCards;
+
+    private void Start()
     {
-        
+        t_placeMultipleCards.interactable = PhotonNetwork.IsMasterClient;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SendMultiPlacement(bool allow)
     {
-        
+        photonView.RPC("ToggleMultiPlacement", RpcTarget.All, allow);
+    }
+
+    [PunRPC]
+    private void ToggleMultiPlacement(bool allow)
+    {
+        placeMultipleCards = allow;
+        t_placeMultipleCards.SetIsOnWithoutNotify(allow);
     }
 }
