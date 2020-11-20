@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
@@ -29,10 +30,6 @@ public class Core : MonoBehaviourPun
     /// </summary>
     private void Start()
     {
-        GC = GetComponent<GameCore>();
-        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName);
-        GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
-
         int j = 0;
         foreach (Card Card in Cards)
         {
@@ -43,6 +40,12 @@ public class Core : MonoBehaviourPun
                 j++;
             }
         }
+        if (SceneManager.GetActiveScene().name != "game") return;
+        GC = GetComponent<GameCore>();
+        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName);
+        GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
+
+        
 
         //Hide template texts and cards
         foreach(GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);

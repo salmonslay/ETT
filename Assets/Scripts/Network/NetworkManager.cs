@@ -7,6 +7,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public static NetworkManager Instance;
 
+    public GameObject B_Name;
+    public GameObject B_Join;
+    public GameObject B_Create;
+    public GameObject I_Name;
+    public GameObject I_Room;
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -21,6 +28,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to master");
+        B_Join.SetActive(true);
+        B_Create.SetActive(true);
+        I_Room.SetActive(true);
+        B_Name.SetActive(false);
+        I_Name.SetActive(false);
+        
     }
     public void Connect()
     {
@@ -30,11 +43,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(GameObject.Find("Canvas/join room").GetComponent<InputField>().text);
+        PhotonNetwork.JoinRoom(GameObject.Find("Canvas/room").GetComponent<InputField>().text);
     }
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(GameObject.Find("Canvas/create room").GetComponent<InputField>().text);
+        PhotonNetwork.CreateRoom(GameObject.Find("Canvas/room").GetComponent<InputField>().text);
     }
     public override void OnJoinedRoom()
     {

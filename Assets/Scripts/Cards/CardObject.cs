@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class CardObject : MonoBehaviour
@@ -26,7 +27,7 @@ public class CardObject : MonoBehaviour
     private void Update()
     {
         if (dest == "NONE") return;
-        if (dest == "STACK")
+        else if (dest == "STACK")
         {
             speed = Random.Range(1.5f, 2.5f);
             transform.position = Vector3.MoveTowards(transform.position, stackPos, speed * 11.7f * Time.deltaTime);
@@ -43,12 +44,19 @@ public class CardObject : MonoBehaviour
                 dest = "NONE";
             }
         }
+        else if(dest == "LEFT")
+        {
+            transform.rotation = destObj.rotation;
+            if (SceneManager.GetActiveScene().name == "main" && transform.position.x < -44.56) transform.position = new Vector3(52.35f, transform.position.y, transform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x - 10f, destObj.position.y, destObj.position.z), 2f * Time.deltaTime);
+        }
         else //move to card pos
         {
-            destObj = GameObject.Find(dest).transform;
+            if(GameObject.Find(dest)) destObj = GameObject.Find(dest).transform;
+            
 
             transform.position = Vector3.MoveTowards(transform.position, destObj.position, speed * 11.7f * Time.deltaTime);
-            transform.rotation = Quaternion.Slerp(transform.rotation, destObj.rotation, speed * 1.6f * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, destObj.rotation, speed * (SceneManager.GetActiveScene().name == "main" ? 0.6f : 1.6f) * Time.deltaTime);
             transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(destObj.lossyScale.x, destObj.lossyScale.x * 1.4494f, 0.0001f), speed * 4 * Time.deltaTime);
             if (transform.position == destObj.position) speed = 15;
             else if (moveInStack) speed = 0.35f;
