@@ -16,7 +16,11 @@ public class Core : MonoBehaviourPun
     public int playerCount;
     public GameCore GC;
 
-    
+    public Button buttonSkip;
+    public Button buttonEtt;
+    public Text textEtt;
+
+    public bool started = false;
 
     
 
@@ -76,6 +80,7 @@ public class Core : MonoBehaviourPun
         GC.currentPlayerName = masterName;
         GC.currentPlayerIndex = PlayerList.IndexOf(masterName);
         Debug.Log($"Current player is {masterName} at index {GC.currentPlayerIndex} and spot {GC.PlayOrder[GC.currentPlayerIndex]}");
+        started = true;
     }
 
     /// <summary>

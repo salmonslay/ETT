@@ -11,6 +11,9 @@ public class OwnStack : MonoBehaviourPun
     public List<Card> MyDeck = new List<Card>();
     public Core Core;
 
+    public bool hasPut = false;
+    public bool hasEtt = false;
+
     //focused wild
     private string oldPos;
 
@@ -35,12 +38,25 @@ public class OwnStack : MonoBehaviourPun
                     else WildColorSelection.SetActive(true);
                     currentFocus = g;
                 }
-                else if (Card.IsMatch(Core.GC.currentTop, g.Card)) PutCard(g);
+                else if (!hasPut && Card.IsMatch(Core.GC.currentTop, g.Card))
+                {
+                    PutCard(g);
+                    hasPut = true;
+                }
+                else if (hasPut && Card.IsSecondMatch(Core.GC.currentTop, g.Card))
+                {
+                    PutCard(g);
+                }
             }
         }
 
         if (Input.GetKeyDown(KeyCode.K)) ToggleFocus();
         if (Input.GetKeyDown(KeyCode.B)) StartCoroutine(AddCards(1));
+        if(Core.started)
+        {
+            Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
+            Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
+        }
     }
 
     /// <summary>
@@ -59,6 +75,7 @@ public class OwnStack : MonoBehaviourPun
             if (color == "blue") c = CardProperties.Color.Blue;
             PlayBoard.SetColor(c);
             PutCard(currentFocus);
+            hasPut = true;
         }
         oldPos = null;
     }
@@ -98,10 +115,10 @@ public class OwnStack : MonoBehaviourPun
         cardobj.moveInStack = true;
         Core.GC.currentTop = cardobj.Card;
         MyDeck.Remove(card);
-
-        photonView.RPC("PlayPutCardAnimation", RpcTarget.Others, PhotonNetwork.NickName, card.ID);
-        photonView.RPC("PutCardAction", RpcTarget.All, card.ID, (int)PlayBoard.currentColor);
+        if (card.Color != CardProperties.Color.Wild) PlayBoard.SetColor(card.Color);
+        photonView.RPC("PlayPutCardAnimation", RpcTarget.Others, PhotonNetwork.NickName, card.ID, (int)PlayBoard.currentColor);
         UpdateStack();
+        if (MyDeck.Count == 1) hasEtt = true;
     }
 
     /// <summary>
@@ -110,9 +127,10 @@ public class OwnStack : MonoBehaviourPun
     /// <param name="user">User that places the card</param>
     /// <param name="cardID">Card that gets placed</param>
     [PunRPC]
-    public void PlayPutCardAnimation(string user, string cardID)
+    public void PlayPutCardAnimation(string user, string cardID, int color)
     {
         Core.GC.currentTop = Core.CardFromID(cardID);
+        if (color != 4) PlayBoard.SetColor((CardProperties.Color)color);
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("OtherCards"))
         {
             Player p = g.GetComponent<Player>();
@@ -123,6 +141,7 @@ public class OwnStack : MonoBehaviourPun
                 card.GetComponent<CardObject>().dest = $"STACK";
                 card.GetComponent<Renderer>().material.mainTexture = Resources.Load<Texture>($"Cards/{cardID}");
                 p.cardAmount--;
+                GameObject.Find(p.destination + "/Canvas/Text").GetComponent<Text>().text = $"{user}\n{p.cardAmount} cards";
             }
         }
     }
@@ -131,10 +150,11 @@ public class OwnStack : MonoBehaviourPun
     /// Runs action when place a card
     /// </summary>
     [PunRPC]
-    public void PutCardAction(string cardID, int color)
+    public void PutCardAction()
     {
-        Card card = Core.CardFromID(cardID);
-        if (color != 4) PlayBoard.SetColor((CardProperties.Color)color);
+        Core.textEtt.gameObject.SetActive(false);
+        hasPut = false;
+        Card card = Core.GC.currentTop;
 
         //Take cards if you're next
         if (card.Type == CardProperties.Type.Draw && Core.GC.PlayOrder[Core.GC.NextPlayer()] == -1)
@@ -209,6 +229,49 @@ public class OwnStack : MonoBehaviourPun
         {
             AddCard();
             yield return new WaitForSeconds(delay);
+        }
+    }
+
+    public void ETT()
+    {
+        if (hasEtt)
+        {
+            hasEtt = false;
+            photonView.RPC("AnnounceETT", RpcTarget.All, true, PhotonNetwork.NickName);
+        }
+        else
+        {
+            photonView.RPC("AnnounceETT", RpcTarget.All, false, PhotonNetwork.NickName);
+            StartCoroutine(AddCards(2));
+            //play effect
+        }
+    }
+    [PunRPC]
+    public void AnnounceETT(bool success, string name)
+    {
+        Core.textEtt.gameObject.SetActive(true);
+        if (success)
+        {
+            Core.textEtt.color = new Color(0.1168802f, 0.9339623f, 0.08370414f);
+            Core.textEtt.text = $"{name} has Ett!";
+        }
+        else
+        {
+            Core.textEtt.color = Color.red;
+            Core.textEtt.text = $"{name} tried to claim Ett!";
+        }
+    }
+
+    public void TryToContinue()
+    {
+        if (hasEtt)
+        {
+            StartCoroutine(AddCards(2));
+            hasEtt = false;
+        }
+        else if (hasPut)
+        {
+            photonView.RPC("PutCardAction", RpcTarget.All);
         }
     }
 }
