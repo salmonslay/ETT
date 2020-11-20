@@ -14,6 +14,8 @@ public class OwnStack : MonoBehaviourPun
     public bool hasPut = false;
     public bool hasEtt = false;
 
+    public int pickFromStack;
+
     //focused wild
     private string oldPos;
 
@@ -26,6 +28,7 @@ public class OwnStack : MonoBehaviourPun
     {
         if (Input.GetMouseButtonDown(0))
         {
+            //put card on board
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") && oldPos == null && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
             {
                 CardObject g = hit.transform.gameObject.GetComponent<CardObject>();
@@ -48,6 +51,12 @@ public class OwnStack : MonoBehaviourPun
                     PutCard(g);
                 }
             }
+            //pick up card from stack
+            else if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
+            {
+                pickFromStack++;
+                AddCard();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.K)) ToggleFocus();
@@ -55,7 +64,7 @@ public class OwnStack : MonoBehaviourPun
         if (Core.started)
         {
             Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
-            Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
+            Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1 && hasPut || pickFromStack > 2;
         }
     }
 
@@ -154,6 +163,7 @@ public class OwnStack : MonoBehaviourPun
     {
         Core.textEtt.gameObject.SetActive(false);
         hasPut = false;
+        pickFromStack = 0;
         Card card = Core.GC.currentTop;
 
         //Take cards if you're next
