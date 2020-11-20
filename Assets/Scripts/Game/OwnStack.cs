@@ -52,20 +52,23 @@ public class OwnStack : MonoBehaviourPun
                 }
             }
             //pick up card from stack
-            else if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
+            //triggers by click on stack or B
+            else if((Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") || Input.GetKeyDown(KeyCode.B)) && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
             {
                 pickFromStack++;
-                AddCard();
+                StartCoroutine(AddCards(1));
+                hasEtt = MyDeck.Count == 1;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.K)) ToggleFocus();
-        if (Input.GetKeyDown(KeyCode.B)) StartCoroutine(AddCards(1));
+        if (Input.GetMouseButtonDown(0)) Core.textEtt.gameObject.SetActive(false);
         if (Core.started)
         {
             Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
             Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1 && hasPut || pickFromStack > 2;
         }
+        
     }
 
     /// <summary>
@@ -127,7 +130,7 @@ public class OwnStack : MonoBehaviourPun
         if (card.Color != CardProperties.Color.Wild) PlayBoard.SetColor(card.Color);
         photonView.RPC("PlayPutCardAnimation", RpcTarget.Others, PhotonNetwork.NickName, card.ID, (int)PlayBoard.currentColor);
         UpdateStack();
-        if (MyDeck.Count == 1) hasEtt = true;
+        hasEtt = MyDeck.Count == 1;
     }
 
     /// <summary>
@@ -279,8 +282,9 @@ public class OwnStack : MonoBehaviourPun
         {
             StartCoroutine(AddCards(2));
             hasEtt = false;
+            Core.textEtt.text = $"{name} forgot to claim Ett!";
         }
-        else if (hasPut)
+        else if (hasPut || pickFromStack > 2)
         {
             photonView.RPC("PutCardAction", RpcTarget.All);
         }

@@ -19,7 +19,7 @@ public class CardObject : MonoBehaviour
     private void Start()
     {
         stackPos = new Vector3(Random.Range(0.3f, -0.3f), 15, Random.Range(0.3f, -0.3f));
-        stackSize = new Vector3(-4.178819f, -6.052824f, 0.15f);
+        stackSize = new Vector3(-4.178819f, -6.052824f, 0.01f);
         stackRotation = Quaternion.Euler(90, Random.Range(-30, 0), 0);
     }
 
