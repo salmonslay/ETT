@@ -12,6 +12,21 @@ public class Core : MonoBehaviourPun
     public static string avatarLink = "";
     public static string[] avatarList = new string[] 
     {
+        "https://i.imgur.com/IBsGBmy.png", //hana uzaki
+        "https://i.imgur.com/XsdrsJZ.png", //akihiko asai
+        "https://i.imgur.com/fnFa2fY.png", //kazuya kinoshita
+        "https://i.imgur.com/SvrnIe8.png", //malty melromarc
+        "https://i.imgur.com/9pUWSQP.png", //legosi
+        "https://i.imgur.com/nk0puR7.png", //sayori
+        "https://i.imgur.com/UgZcxLz.png", //astolfo
+        "https://i.imgur.com/BrbUFE5.png", //hibiki sakura
+        "https://i.imgur.com/uiXhtc9.png", //naruzou machio normal
+        "https://i.imgur.com/GbkEnBi.png", //mai sakurajima bunny
+        "https://i.imgur.com/jzfT7Mh.png", //emilia
+        "https://i.imgur.com/hxl4fXH.png", //nagatoro
+        "https://i.imgur.com/EBaXShH.png", //rintarou okabe
+        "https://i.imgur.com/ij1jm9r.png", //violet evergarden
+        "https://i.imgur.com/t0VpL94.png", //shouko nishimiya
         "https://i.imgur.com/X88q5UN.png", //koyomi araragi
         "https://i.imgur.com/vtGaqUF.png", //light yagami
         "https://i.imgur.com/VkpkbqT.png", //itaru hashida
@@ -34,6 +49,7 @@ public class Core : MonoBehaviourPun
         "https://i.imgur.com/4mE3NNL.png", //ryuk
         "https://i.imgur.com/7E5rDOG.png" //sakamoto
     };
+    public int avatarID = 0;
     public Card[] Cards; //One of each
     public Card[] FullDeck = new Card[108]; //Contains exactly as many cards as it should
     public OwnStack Stack;
@@ -73,7 +89,10 @@ public class Core : MonoBehaviourPun
     {
         if (SceneManager.GetActiveScene().name != "game") return;
         dl = Download.Init();
-        if (!avatarLink.Contains("https")) avatarLink = avatarList[UnityEngine.Random.Range(0, avatarList.Length)];
+        System.Random rnd = new System.Random();
+        avatarList = avatarList.OrderBy(x => rnd.Next()).ToArray();
+        avatarID = UnityEngine.Random.Range(0, avatarList.Length);
+        if (!avatarLink.Contains("https")) avatarLink = avatarList[avatarID];
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
 
         PlayStartAnimation();
@@ -117,6 +136,7 @@ public class Core : MonoBehaviourPun
         GC.SortPlayerList();
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
+        Destroy(GameObject.Find("Canvas/AvatarButton"));
         Destroy(GameObject.Find("Canvas/AllowMultipleCards"));
         Settings.placeMultipleCards = allowMultiPlace;
         //Create top card
@@ -171,6 +191,19 @@ public class Core : MonoBehaviourPun
         }
     }
 
+    public void ChangeAvatar()
+    {
+        avatarID++;
+        if (avatarID == avatarList.Length) avatarID = 0;
+        avatarLink = avatarList[avatarID];
+        photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
+    }
+    [PunRPC]
+    private void EditAvatarCall(string name, string avatar)
+    {
+        AvatarList[PlayerList.IndexOf(name)] = avatarLink;
+        dl.ChangeAlpha(GameObject.Find($"StartWorldCanvas/User ({PlayerList.IndexOf(name)})/Avatar").GetComponent<RawImage>(), avatar);
+    }
     #region Master
 
     /// <summary>
