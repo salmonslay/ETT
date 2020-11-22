@@ -11,6 +11,7 @@ TagManager:
   - TemplateCard
   - CardStack
   - LEFT
+  - Download
   layers:
   - Default
   - TransparentFX

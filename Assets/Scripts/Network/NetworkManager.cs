@@ -2,6 +2,7 @@
 using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Realtime;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -47,7 +48,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(GameObject.Find("Canvas/room").GetComponent<InputField>().text);
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 9,
+            IsOpen = true
+        };
+        PhotonNetwork.CreateRoom(GameObject.Find("Canvas/room").GetComponent<InputField>().text, roomOptions);
     }
     public override void OnJoinedRoom()
     {

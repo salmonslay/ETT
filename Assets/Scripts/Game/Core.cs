@@ -1,7 +1,6 @@
 ﻿using Photon.Pun;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,10 +9,36 @@ using Debug = UnityEngine.Debug;
 
 public class Core : MonoBehaviourPun
 {
+    public static string avatarLink = "";
+    public static string[] avatarList = new string[] 
+    {
+        "https://i.imgur.com/X88q5UN.png", //koyomi araragi
+        "https://i.imgur.com/vtGaqUF.png", //light yagami
+        "https://i.imgur.com/VkpkbqT.png", //itaru hashida
+        "https://i.imgur.com/IQnYaet.png", //comfy asakusa
+        "https://i.imgur.com/cNxJa9F.png", //monika
+        "https://i.imgur.com/3zA1K6l.png", //mina hibino
+        "https://i.imgur.com/AeGNeA0.png", //mami nanami
+        "https://i.imgur.com/EEFTGaA.png", //mai sakurajima
+        "https://i.imgur.com/9idO5P1.png", //mio honda
+        "https://i.imgur.com/BOMaSCm.png", //L
+        "https://i.imgur.com/gnUqYC1.png", //aqua
+        "https://i.imgur.com/29necaZ.png", //ruka sarashina 
+        "https://i.imgur.com/VEdYKXM.png", //kanna kamui
+        "https://i.imgur.com/5TELiih.png", //yuu ishigami
+        "https://i.imgur.com/6k3l3wI.png", //sakuta azusagawa
+        "https://i.imgur.com/d5aNsWY.png", //satou kazuma
+        "https://i.imgur.com/C7Wht7q.png", //saki kamisato
+        "https://i.imgur.com/nLWkwy8.png", //hideri kanzeki
+        "https://i.imgur.com/vU3GKLM.png", //naruzou machio
+        "https://i.imgur.com/4mE3NNL.png", //ryuk
+        "https://i.imgur.com/7E5rDOG.png" //sakamoto
+    };
     public Card[] Cards; //One of each
     public Card[] FullDeck = new Card[108]; //Contains exactly as many cards as it should
     public OwnStack Stack;
     public List<string> PlayerList = new List<string>();
+    public List<string> AvatarList = new List<string>();
     public int playerCount;
     public GameCore GC;
 
@@ -22,8 +47,7 @@ public class Core : MonoBehaviourPun
     public Text textEtt;
 
     public bool started = false;
-
-    
+    private Download dl;
 
     /// <summary>
     /// Starts pre-loading the game and cards.
@@ -41,16 +65,37 @@ public class Core : MonoBehaviourPun
             }
         }
         if (SceneManager.GetActiveScene().name != "game") return;
-        GC = GetComponent<GameCore>();
-        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName);
-        GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient;
 
-        
+        GC = GetComponent<GameCore>();
+    }
+
+    private void Start()
+    {
+        if (SceneManager.GetActiveScene().name != "game") return;
+        dl = Download.Init();
+        if (!avatarLink.Contains("https")) avatarLink = avatarList[UnityEngine.Random.Range(0, avatarList.Length)];
+        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
+
+        PlayStartAnimation();
 
         //Hide template texts and cards
-        foreach(GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
+        foreach (GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
+
+    public void PlayStartAnimation()
+    {
+        for (int i = 0; i < 16; i++)
+        {
+            GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
+            Destroy(card.GetComponent<CardObject>());
+            card.transform.position = new Vector3(-15.21f + UnityEngine.Random.Range(-0.5f, 0.5f), 50 + i * 3, -13.96f + UnityEngine.Random.Range(-0.5f, 0.5f));
+            card.AddComponent<Rigidbody>();
+            card.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+            Destroy(card.GetComponent<Rigidbody>(), 13);
+        }
+    }
+
     /// <summary>
     /// Get a card object from ID
     /// </summary>
@@ -69,7 +114,6 @@ public class Core : MonoBehaviourPun
     [PunRPC]
     private void ConfigureGame(string topCardID, string masterName, bool allowMultiPlace)
     {
-        
         GC.SortPlayerList();
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
@@ -84,6 +128,12 @@ public class Core : MonoBehaviourPun
         GC.currentPlayerName = masterName;
         GC.currentPlayerIndex = PlayerList.IndexOf(masterName);
         Debug.Log($"Current player is {masterName} at index {GC.currentPlayerIndex} and spot {GC.PlayOrder[GC.currentPlayerIndex]}");
+
+        //play animations
+        Camera.main.GetComponent<Animator>().Play("gameGoUp");
+        GameObject.Find("Canvas/Players").GetComponent<Animator>().Play("playerlistIn");
+        buttonEtt.GetComponent<Animator>().Play("buttonIn");
+        buttonSkip.GetComponent<Animator>().Play("buttonIn");
         started = true;
     }
 
@@ -91,26 +141,38 @@ public class Core : MonoBehaviourPun
     /// Runs on master client in lobbies
     /// </summary>
     [PunRPC]
-    public void AddPlayer(string name)
+    public void AddPlayer(string name, string avatar)
     {
         PlayerList.Add(name);
-        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
+        AvatarList.Add(avatar);
+        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
     }
 
     /// <summary>
     /// Runs when game starts
     /// </summary>
     [PunRPC]
-    public void DownloadPlayerlist(string namelist)
+    public void DownloadPlayerlist(string namelist, string avatarlist)
     {
         string[] Players = namelist.Split('#');
+        string[] Avatars = avatarlist.Split('#');
         GameObject.Find("Canvas/Players").GetComponent<Text>().text = $"Room: <b>{PhotonNetwork.CurrentRoom.Name}</b>\nPlayers ({Players.Length}):\n- <b>{string.Join("</b>\n- <b>", Players)}</b>";
 
         Stack.myID = Array.IndexOf(Players, PhotonNetwork.NickName);
         playerCount = Players.Length;
         PlayerList = Players.ToList();
+        AvatarList = Avatars.ToList();
+        GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient && playerCount > 1;
+        for (int i = 0; i < PlayerList.Count; i++)
+        {
+            GameObject.Find($"StartWorldCanvas/User ({i})/Text").GetComponent<Text>().text = Players[i];
+            if (Avatars[i].Contains("https://"))
+                dl.ChangeAlpha(GameObject.Find($"StartWorldCanvas/User ({i})/Avatar").GetComponent<RawImage>(), Avatars[i]);
+        }
     }
+
     #region Master
+
     /// <summary>
     /// Starts the game for everyone
     /// </summary>
@@ -118,12 +180,12 @@ public class Core : MonoBehaviourPun
     {
         //Picks a card that is a number
         Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
-        while(first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
+        while (first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
 
         photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, Settings.placeMultipleCards);
 
-        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()));
+        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
     }
 
-    #endregion
+    #endregion Master
 }

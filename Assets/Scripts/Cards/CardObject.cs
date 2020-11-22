@@ -15,6 +15,7 @@ public class CardObject : MonoBehaviour
     private Quaternion stackRotation;
 
     public bool menuFlip = false;
+    public bool destroyIfTouch = false;
 
     //Card props
     public Card Card;
@@ -67,5 +68,9 @@ public class CardObject : MonoBehaviour
             else if (moveInStack) speed = 0.35f;
             else speed = Random.Range(0.9f, 1.1f);
         }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (destroyIfTouch) Destroy(gameObject);
     }
 }
