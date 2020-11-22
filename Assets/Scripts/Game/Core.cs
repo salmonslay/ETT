@@ -155,7 +155,7 @@ public class Core : MonoBehaviourPun
         GC.SortPlayerList();
         StartCoroutine(Stack.AddCards(7));
         Destroy(GameObject.Find("Canvas/StartButton"));
-        Destroy(GameObject.Find("Canvas/AvatarButton"));
+        Destroy(GameObject.Find("Canvas/AvatarChange"));
         Destroy(GameObject.Find("Canvas/AllowMultipleCards"));
         Settings.placeMultipleCards = allowMultiPlace;
         //Create top card
@@ -210,10 +210,11 @@ public class Core : MonoBehaviourPun
         }
     }
 
-    public void ChangeAvatar()
+    public void ChangeAvatar(int modifier)
     {
-        avatarID++;
+        avatarID += modifier;
         if (avatarID == avatarList.Length) avatarID = 0;
+        if (avatarID == -1) avatarID = avatarList.Length - 1;
         avatarLink = avatarList[avatarID];
         photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
     }
