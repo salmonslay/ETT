@@ -6,7 +6,7 @@ public class CardObject : MonoBehaviour
 {
     public string dest = "NONE";
     private Transform destObj;
-    private float speed = 1;
+    private float speed = 1.25f;
     public bool moveInStack = false;
 
     //Stack offsets
@@ -41,6 +41,7 @@ public class CardObject : MonoBehaviour
                 transform.rotation = stackRotation;
                 transform.localScale = stackSize;
                 gameObject.AddComponent<Rigidbody>();
+                gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
                 gameObject.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 gameObject.GetComponent<Rigidbody>().mass = 1.5f;
                 Destroy(GetComponent<Rigidbody>(), 7);
