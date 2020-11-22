@@ -42,11 +42,17 @@ public class GameCore : MonoBehaviourPun
         List<string> namesBefore = Core.PlayerList.GetRange(0, Core.Stack.myID);
         Core.PlayerList.RemoveRange(0, Core.Stack.myID);
         Core.PlayerList.AddRange(namesBefore);
+
+        List<string> avatarsBefore = Core.AvatarList.GetRange(0, Core.Stack.myID);
+        Core.AvatarList.RemoveRange(0, Core.Stack.myID);
+        Core.AvatarList.AddRange(avatarsBefore);
+
         GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text = string.Join(", ", Core.PlayerList);
         PlayOrder = PlayOrders[Core.PlayerList.Count - 2];
         for (int i = 1; i < Core.PlayerList.Count; i++)
         {
             GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/Text").GetComponent<Text>().text = $"{Core.PlayerList[i]} ({i})";
+            Core.dl.ChangeAlpha(GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/Image").GetComponent<RawImage>(), Core.AvatarList[i]);
             GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().name = Core.PlayerList[i];
             GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().destination = $"OtherCards ({PlayOrder[i]})";
         }

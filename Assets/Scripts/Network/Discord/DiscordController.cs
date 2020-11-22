@@ -14,6 +14,7 @@ public class DiscordJoinRequestEvent : UnityEngine.Events.UnityEvent<DiscordRpc.
 
 public class DiscordController : MonoBehaviour
 {
+    public static bool avatarFound = false;
     public DiscordRpc.RichPresence presence = new DiscordRpc.RichPresence();
     public string applicationId;
     public string optionalSteamId;
@@ -47,6 +48,7 @@ public class DiscordController : MonoBehaviour
     {
         Debug.Log(string.Format("RPC: connected to {0} {1}", connectedUser.userId, connectedUser.avatar));
         Core.avatarLink = $"https://cdn.discordapp.com/avatars/{connectedUser.userId}/{connectedUser.avatar}.png?size=256";
+        avatarFound = true;
         onConnect.Invoke();
 
     }
@@ -94,7 +96,7 @@ public class DiscordController : MonoBehaviour
 
     private void Update()
     {
-        if(!Core.avatarLink.Contains("https")) DiscordRpc.RunCallbacks();
+       DiscordRpc.RunCallbacks();
     }
 
     private void OnEnable()

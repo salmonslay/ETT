@@ -63,7 +63,8 @@ public class Core : MonoBehaviourPun
     public Text textEtt;
 
     public bool started = false;
-    private Download dl;
+    [HideInInspector]
+    public Download dl;
 
     /// <summary>
     /// Starts pre-loading the game and cards.
@@ -95,7 +96,7 @@ public class Core : MonoBehaviourPun
         if (!avatarLink.Contains("https")) avatarLink = avatarList[avatarID];
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
 
-        PlayStartAnimation();
+        //PlayStartAnimation();
 
         //Hide template texts and cards
         foreach (GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
@@ -214,10 +215,10 @@ public class Core : MonoBehaviourPun
         //Picks a card that is a number
         Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
         while (first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
-
+        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
         photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, Settings.placeMultipleCards);
 
-        photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
+        
     }
 
     #endregion Master
