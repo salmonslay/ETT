@@ -12,6 +12,25 @@ public class Core : MonoBehaviourPun
     public static string avatarLink = "";
     public static string[] avatarList = new string[] 
     {
+        "https://i.imgur.com/rg35GNa.png", //zero two
+        "https://i.imgur.com/uuQRoCK.png", //yuu koito
+        "https://i.imgur.com/l5sA07u.png", //kyu sugardust
+        "https://i.imgur.com/Kxmlq5a.png", //himeko momokino
+        "https://i.imgur.com/3zJBN9W.png", //vera (caramelldansen)
+        "https://i.imgur.com/5YwJjUE.png", //nishikata
+        "https://i.imgur.com/AEmrhrn.png", //colonel sanders
+        "https://i.imgur.com/yM2FATg.png", //maki nishikino
+        "https://i.imgur.com/FhUxum5.png", //miko iino
+        "https://i.imgur.com/lvNahgR.png", //umaru doma
+        "https://i.imgur.com/gKVW2TF.png", //yui hirasawa (k-on)
+        "https://i.imgur.com/fjXukDE.png", //wiz
+        "https://i.imgur.com/hd4kHeY.png", //rio futaba
+        "https://i.imgur.com/wnrrAsX.png", //darkness
+        "https://i.imgur.com/dq2Iiq7.png", //yuzu aihara
+        "https://i.imgur.com/47kAev5.png", //mei aihara
+        "https://i.imgur.com/M06m0hV.png", //naomi misora
+        "https://i.imgur.com/pC3w5hl.png", //near
+        "https://i.imgur.com/IRMxXT3.png", //rem (death note)
         "https://i.imgur.com/IBsGBmy.png", //hana uzaki
         "https://i.imgur.com/XsdrsJZ.png", //akihiko asai
         "https://i.imgur.com/fnFa2fY.png", //kazuya kinoshita
@@ -57,7 +76,6 @@ public class Core : MonoBehaviourPun
     public List<string> AvatarList = new List<string>();
     public int playerCount;
     public GameCore GC;
-
     public Button buttonSkip;
     public Button buttonEtt;
     public Text textEtt;

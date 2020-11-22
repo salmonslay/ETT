@@ -4019,6 +4019,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fabb6d4ec1aa1a46b80dceb7b997486, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  avatarID: 0
   Cards:
   - {fileID: 11400000, guid: c3d8282a04692204ab7930a7a32b66e8, type: 2}
   - {fileID: 11400000, guid: fbefc4f2ee6fd4146b441ba7bb5fac8b, type: 2}
@@ -4192,6 +4193,7 @@ MonoBehaviour:
   buttonEtt: {fileID: 0}
   textEtt: {fileID: 0}
   started: 0
+  dl: {fileID: 0}
 --- !u!1001 &592472291
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
 ﻿using Photon.Pun;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Settings : MonoBehaviourPun
@@ -8,7 +10,13 @@ public class Settings : MonoBehaviourPun
 
     private void Start()
     {
-        t_placeMultipleCards.interactable = PhotonNetwork.IsMasterClient;
+        if (SceneManager.GetActiveScene().name == "game")
+            t_placeMultipleCards.interactable = PhotonNetwork.IsMasterClient;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M)) AudioListener.volume = AudioListener.volume == 0.3f ? 0 : 0.3f;
     }
 
     public void SendMultiPlacement(bool allow)

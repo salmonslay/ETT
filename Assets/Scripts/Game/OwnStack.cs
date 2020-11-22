@@ -162,7 +162,7 @@ public class OwnStack : MonoBehaviourPun
     /// Runs action when place a card
     /// </summary>
     [PunRPC]
-    public void PutCardAction()
+    public void PutCardAction(bool run)
     {
         Core.textEtt.gameObject.SetActive(false);
         hasPut = false;
@@ -170,16 +170,16 @@ public class OwnStack : MonoBehaviourPun
         Card card = Core.GC.currentTop;
 
         //Take cards if you're next
-        if (card.Type == CardProperties.Type.Draw && Core.GC.PlayOrder[Core.GC.NextPlayer()] == -1)
+        if (card.Type == CardProperties.Type.Draw && Core.GC.PlayOrder[Core.GC.NextPlayer()] == -1 && run)
         {
             if (card.Color == CardProperties.Color.Wild) StartCoroutine(AddCards(4));
             else StartCoroutine(AddCards(2));
         }
-        else if (card.Type == CardProperties.Type.Reverse)
+        else if (card.Type == CardProperties.Type.Reverse && run)
         {
             Core.GC.isReverse = !Core.GC.isReverse;
         }
-        if (card.Type == CardProperties.Type.Skip)
+        if (card.Type == CardProperties.Type.Skip && run)
         {
             Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
             Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
@@ -286,7 +286,7 @@ public class OwnStack : MonoBehaviourPun
         }
         else if (hasPut || pickFromStack > 2)
         {
-            photonView.RPC("PutCardAction", RpcTarget.All);
+            photonView.RPC("PutCardAction", RpcTarget.All, hasPut);
         }
     }
 }
