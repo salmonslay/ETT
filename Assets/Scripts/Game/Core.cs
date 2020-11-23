@@ -10,8 +10,16 @@ using Debug = UnityEngine.Debug;
 public class Core : MonoBehaviourPun
 {
     public static string avatarLink = "";
-    public static string[] avatarList = new string[] 
+    public static string[] avatarDB = new string[] 
     {
+        "https://i.imgur.com/o0P47Fa.png", //mio honda
+        "https://i.imgur.com/X2BJoSu.png", //kanna kamui eating
+        "https://i.imgur.com/qg2qhUh.png", //kobayashi
+        "https://i.imgur.com/FrSap3M.png", //hanabi yasuraoka
+        "https://i.imgur.com/JqydBzp.png", //ayame kajou
+        "https://i.imgur.com/PjfcigK.png", //hyouka fuwa
+        "https://i.imgur.com/huC6hbo.png", //mitsuri kanroji
+        "https://i.imgur.com/tGnn5wy.png", //aqua crab
         "https://i.imgur.com/rg35GNa.png", //zero two
         "https://i.imgur.com/uuQRoCK.png", //yuu koito
         "https://i.imgur.com/l5sA07u.png", //kyu sugardust
@@ -54,7 +62,7 @@ public class Core : MonoBehaviourPun
         "https://i.imgur.com/3zA1K6l.png", //mina hibino
         "https://i.imgur.com/AeGNeA0.png", //mami nanami
         "https://i.imgur.com/EEFTGaA.png", //mai sakurajima
-        "https://i.imgur.com/9idO5P1.png", //mio honda
+        "https://i.imgur.com/lneDF0W.png", //mio honda
         "https://i.imgur.com/BOMaSCm.png", //L
         "https://i.imgur.com/gnUqYC1.png", //aqua
         "https://i.imgur.com/29necaZ.png", //ruka sarashina 
@@ -109,9 +117,9 @@ public class Core : MonoBehaviourPun
         if (SceneManager.GetActiveScene().name != "game") return;
         dl = Download.Init();
         System.Random rnd = new System.Random();
-        avatarList = avatarList.OrderBy(x => rnd.Next()).ToArray();
-        avatarID = UnityEngine.Random.Range(0, avatarList.Length);
-        if (!avatarLink.Contains("https")) avatarLink = avatarList[avatarID];
+        avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToArray();
+        avatarID = UnityEngine.Random.Range(0, avatarDB.Length);
+        if (!avatarLink.Contains("https")) avatarLink = avatarDB[avatarID];
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
 
         //PlayStartAnimation();
@@ -200,8 +208,11 @@ public class Core : MonoBehaviourPun
         Stack.myID = Array.IndexOf(Players, PhotonNetwork.NickName);
         playerCount = Players.Length;
         PlayerList = Players.ToList();
+        AvatarList.Clear();
         AvatarList = Avatars.ToList();
         GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient && playerCount > 1;
+        GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text = string.Join("\n", AvatarList);
+        GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text += "\n"+ string.Join("\n", PlayerList);
         for (int i = 0; i < PlayerList.Count; i++)
         {
             GameObject.Find($"StartWorldCanvas/User ({i})/Text").GetComponent<Text>().text = Players[i];
@@ -213,15 +224,15 @@ public class Core : MonoBehaviourPun
     public void ChangeAvatar(int modifier)
     {
         avatarID += modifier;
-        if (avatarID == avatarList.Length) avatarID = 0;
-        if (avatarID == -1) avatarID = avatarList.Length - 1;
-        avatarLink = avatarList[avatarID];
+        if (avatarID == avatarDB.Length) avatarID = 0;
+        if (avatarID == -1) avatarID = avatarDB.Length - 1;
+        avatarLink = avatarDB[avatarID];
         photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
     }
     [PunRPC]
     private void EditAvatarCall(string name, string avatar)
     {
-        AvatarList[PlayerList.IndexOf(name)] = avatarLink;
+        AvatarList[PlayerList.IndexOf(name)] = avatar;
         dl.ChangeAlpha(GameObject.Find($"StartWorldCanvas/User ({PlayerList.IndexOf(name)})/Avatar").GetComponent<RawImage>(), avatar);
     }
     #region Master
