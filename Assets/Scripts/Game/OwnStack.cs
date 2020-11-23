@@ -46,6 +46,10 @@ public class OwnStack : MonoBehaviourPun
                     PutCard(g);
                     hasPut = true;
                 }
+                else if (hasPut && Card.IsSecondMatch(Core.GC.currentTop, g.Card))
+                {
+                    PutCard(g);
+                }
             }
             //pick up card from stack
             //triggers by click on stack or B

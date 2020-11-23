@@ -42,21 +42,17 @@ public class Card : ScriptableObject
 
         return false;
     }
+
     /// <summary>
-    /// Checks if 
+    /// Checks if
     /// </summary>
     /// <param name="inStack"></param>
     /// <param name="queued"></param>
     /// <returns></returns>
     public static bool IsSecondMatch(Card inStack, Card queued)
     {
-        //Number match
-        if (inStack.Type == CardProperties.Type.Number && queued.Type == CardProperties.Type.Number && inStack.number == queued.number)
+        if (inStack.Color == queued.Color)
             return true;
-        //Types match (and is not number)
-        if (inStack.Type != CardProperties.Type.Number && inStack.Color != CardProperties.Color.Wild && inStack.Type == queued.Type)
-            return true;
-
         return false;
     }
 }
