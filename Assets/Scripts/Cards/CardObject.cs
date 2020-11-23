@@ -67,8 +67,8 @@ public class CardObject : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, destObj.rotation, speed * (SceneManager.GetActiveScene().name == "main" ? 0.6f : 1.6f) * Time.deltaTime);
             transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(destObj.lossyScale.x, destObj.lossyScale.x * 1.4494f, 0.0001f), speed * 4 * Time.deltaTime);
             if (transform.position == destObj.position) speed = 15;
-            else if (moveInStack) speed = 0.35f;
-            else speed = Random.Range(0.9f, 1.1f);
+            else if (moveInStack) speed = 0.55f;
+            else speed = Random.Range(1.3f, 1.5f);
         }
     }
     private void OnCollisionEnter(Collision collision)
