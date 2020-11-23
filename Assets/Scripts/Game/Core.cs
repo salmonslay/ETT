@@ -14,6 +14,7 @@ public class Core : MonoBehaviourPun
 
     public static List<string> avatarDB = new List<string>()
     {
+        "https://i.imgur.com/Mf8lU04.png", //pico
         "https://i.imgur.com/o0P47Fa.png", //mio honda
         "https://i.imgur.com/X2BJoSu.png", //kanna kamui eating
         "https://i.imgur.com/qg2qhUh.png", //kobayashi
