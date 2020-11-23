@@ -12,6 +12,7 @@ TagManager:
   - CardStack
   - LEFT
   - Download
+  - DroppedCard
   layers:
   - Default
   - TransparentFX

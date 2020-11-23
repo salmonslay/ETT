@@ -38,6 +38,7 @@ public class CardObject : MonoBehaviour
             transform.localScale = Vector3.Lerp(transform.localScale, stackSize, speed * 4 * Time.deltaTime);
             if (transform.position == stackPos)
             {
+                gameObject.tag = "DroppedCard";
                 transform.rotation = stackRotation;
                 transform.localScale = stackSize;
                 gameObject.AddComponent<Rigidbody>();

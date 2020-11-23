@@ -121,7 +121,7 @@ public class OwnStack : MonoBehaviourPun
     /// </summary>
     public void PutCard(CardObject cardobj)
     {
-        cardobj.gameObject.tag = "InStack";
+        cardobj.gameObject.tag = "DroppedCard";
         Card card = cardobj.Card;
         cardobj.dest = "STACK";
         cardobj.moveInStack = true;
@@ -149,7 +149,8 @@ public class OwnStack : MonoBehaviourPun
             if (p.name == user)
             {
                 GameObject card = GameObject.Find($"{user}#{p.cardAmount - 1}");
-                card.name = "dropped";
+                card.name = "InStack";
+                card.tag = "DroppedCard";
                 card.GetComponent<CardObject>().dest = $"STACK";
                 card.GetComponent<Renderer>().material.mainTexture = Resources.Load<Texture>($"Cards/{cardID}");
                 p.cardAmount--;
