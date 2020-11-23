@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -119,6 +120,8 @@ public class Core : MonoBehaviourPun
     {
         if (SceneManager.GetActiveScene().name != "game") return;
         dl = Download.Init();
+
+        //set profile picture
         System.Random rnd = new System.Random();
         avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToList();
         if (avatarLink.Contains("https")) avatarDB.Add(avatarLink);
@@ -126,15 +129,16 @@ public class Core : MonoBehaviourPun
         if (!avatarLink.Contains("https")) avatarLink = avatarDB[avatarID];
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
 
-        //PlayStartAnimation();
+        GameObject.Find("StartWorldCanvas/RoomName").GetComponent<Text>().text = $"Room: {PhotonNetwork.CurrentRoom.Name}";
 
         //Hide template texts and cards
         foreach (GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
 
-    public void PlayStartAnimation()
+    IEnumerator PlayStartAnimation()
     {
+        yield return new WaitForSeconds(2);
         for (int i = 0; i < 16; i++)
         {
             GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
@@ -185,6 +189,7 @@ public class Core : MonoBehaviourPun
         GameObject.Find("Canvas/Players").GetComponent<Animator>().Play("playerlistIn");
         buttonEtt.GetComponent<Animator>().Play("buttonIn");
         buttonSkip.GetComponent<Animator>().Play("buttonIn");
+        StartCoroutine(PlayStartAnimation());
         started = true;
     }
 
