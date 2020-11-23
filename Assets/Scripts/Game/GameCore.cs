@@ -77,8 +77,4 @@ public class GameCore : MonoBehaviourPun
         if (newIndex == -1) newIndex = PlayOrder.Length - 1;
         return newIndex;
     }
-
-    /// <summary>
-    /// Variables controlled and method ran by the Game Master
-    /// </summary>
 }

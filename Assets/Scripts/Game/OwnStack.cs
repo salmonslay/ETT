@@ -41,14 +41,10 @@ public class OwnStack : MonoBehaviourPun
                     else WildColorSelection.SetActive(true);
                     currentFocus = g;
                 }
-                else if (!hasPut && Card.IsMatch(Core.GC.currentTop, g.Card))
+                else if (Card.IsMatch(Core.GC.currentTop, g.Card))
                 {
                     PutCard(g);
                     hasPut = true;
-                }
-                else if (hasPut && Card.IsSecondMatch(Core.GC.currentTop, g.Card))
-                {
-                    PutCard(g);
                 }
             }
             //pick up card from stack
