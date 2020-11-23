@@ -10,7 +10,8 @@ using Debug = UnityEngine.Debug;
 public class Core : MonoBehaviourPun
 {
     public static string avatarLink = "";
-    public static string[] avatarDB = new string[] 
+
+    public static List<string> avatarDB = new List<string>()
     {
         "https://i.imgur.com/o0P47Fa.png", //mio honda
         "https://i.imgur.com/X2BJoSu.png", //kanna kamui eating
@@ -65,7 +66,7 @@ public class Core : MonoBehaviourPun
         "https://i.imgur.com/lneDF0W.png", //mio honda
         "https://i.imgur.com/BOMaSCm.png", //L
         "https://i.imgur.com/gnUqYC1.png", //aqua
-        "https://i.imgur.com/29necaZ.png", //ruka sarashina 
+        "https://i.imgur.com/29necaZ.png", //ruka sarashina
         "https://i.imgur.com/VEdYKXM.png", //kanna kamui
         "https://i.imgur.com/5TELiih.png", //yuu ishigami
         "https://i.imgur.com/6k3l3wI.png", //sakuta azusagawa
@@ -76,6 +77,7 @@ public class Core : MonoBehaviourPun
         "https://i.imgur.com/4mE3NNL.png", //ryuk
         "https://i.imgur.com/7E5rDOG.png" //sakamoto
     };
+
     public int avatarID = 0;
     public Card[] Cards; //One of each
     public Card[] FullDeck = new Card[108]; //Contains exactly as many cards as it should
@@ -89,6 +91,7 @@ public class Core : MonoBehaviourPun
     public Text textEtt;
 
     public bool started = false;
+
     [HideInInspector]
     public Download dl;
 
@@ -117,8 +120,9 @@ public class Core : MonoBehaviourPun
         if (SceneManager.GetActiveScene().name != "game") return;
         dl = Download.Init();
         System.Random rnd = new System.Random();
-        avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToArray();
-        avatarID = UnityEngine.Random.Range(0, avatarDB.Length);
+        avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToList();
+        if (avatarLink.Contains("https")) avatarDB.Add(avatarLink);
+        avatarID = UnityEngine.Random.Range(0, avatarDB.Count);
         if (!avatarLink.Contains("https")) avatarLink = avatarDB[avatarID];
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
 
@@ -212,7 +216,7 @@ public class Core : MonoBehaviourPun
         AvatarList = Avatars.ToList();
         GameObject.Find("Canvas/StartButton").GetComponent<Button>().interactable = PhotonNetwork.IsMasterClient && playerCount > 1;
         GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text = string.Join("\n", AvatarList);
-        GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text += "\n"+ string.Join("\n", PlayerList);
+        GameObject.Find("Canvas/DEBUG").GetComponent<Text>().text += "\n" + string.Join("\n", PlayerList);
         for (int i = 0; i < PlayerList.Count; i++)
         {
             GameObject.Find($"StartWorldCanvas/User ({i})/Text").GetComponent<Text>().text = Players[i];
@@ -224,17 +228,19 @@ public class Core : MonoBehaviourPun
     public void ChangeAvatar(int modifier)
     {
         avatarID += modifier;
-        if (avatarID == avatarDB.Length) avatarID = 0;
-        if (avatarID == -1) avatarID = avatarDB.Length - 1;
+        if (avatarID == avatarDB.Count) avatarID = 0;
+        if (avatarID == -1) avatarID = avatarDB.Count - 1;
         avatarLink = avatarDB[avatarID];
         photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
     }
+
     [PunRPC]
     private void EditAvatarCall(string name, string avatar)
     {
         AvatarList[PlayerList.IndexOf(name)] = avatar;
         dl.ChangeAlpha(GameObject.Find($"StartWorldCanvas/User ({PlayerList.IndexOf(name)})/Avatar").GetComponent<RawImage>(), avatar);
     }
+
     #region Master
 
     /// <summary>
@@ -247,8 +253,6 @@ public class Core : MonoBehaviourPun
         while (first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
         photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, Settings.placeMultipleCards);
-
-        
     }
 
     #endregion Master
