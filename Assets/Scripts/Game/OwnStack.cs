@@ -32,7 +32,7 @@ public class OwnStack : MonoBehaviourPun
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") && oldPos == null && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
             {
                 CardObject g = hit.transform.gameObject.GetComponent<CardObject>();
-                if (hasPut && !Settings.placeMultipleCards) return;
+                if (hasPut && !GameSettings.placeMultipleCards) return;
                 if (g.Card.Color == CardProperties.Color.Wild)
                 {
                     oldPos = g.dest;

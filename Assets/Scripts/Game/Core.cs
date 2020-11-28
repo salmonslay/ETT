@@ -189,7 +189,7 @@ public class Core : MonoBehaviourPun
         Destroy(GameObject.Find("Canvas/StartButton"));
         Destroy(GameObject.Find("Canvas/AvatarChange"));
         Destroy(GameObject.Find("Canvas/AllowMultipleCards"));
-        Settings.placeMultipleCards = allowMultiPlace;
+        GameSettings.placeMultipleCards = allowMultiPlace;
         //Create top card
         GC.currentTop = CardFromID(topCardID);
         GameObject card = Instantiate(Resources.Load("Prefabs/TopStack") as GameObject);
@@ -267,7 +267,7 @@ public class Core : MonoBehaviourPun
         Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
         while (first.Type != CardProperties.Type.Number) first = FullDeck[UnityEngine.Random.Range(0, 108)];
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
-        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, Settings.placeMultipleCards);
+        photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, GameSettings.placeMultipleCards);
     }
     /// <summary>
     /// Cycles through the avatar list
