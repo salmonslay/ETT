@@ -11,6 +11,7 @@ using Debug = UnityEngine.Debug;
 public class Core : MonoBehaviourPun
 {
     public static string avatarLink = "";
+    public static string discordLink = "";
 
     public static List<string> avatarDB = new List<string>()
     {
@@ -116,28 +117,20 @@ public class Core : MonoBehaviourPun
 
         GC = GetComponent<GameCore>();
     }
-
     private void Start()
     {
         if (SceneManager.GetActiveScene().name != "game") return;
         dl = Download.Init();
+        GameObject.Find("Canvas/AvatarChange/AvatarButtonClear").GetComponent<Button>().interactable = discordLink.Contains("https");
+        SetProfilePicture();
 
-        //set profile picture
-        System.Random rnd = new System.Random();
-        avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToList();
-        if (avatarLink.Contains("https")) avatarDB.Add(avatarLink);
-        avatarID = UnityEngine.Random.Range(0, avatarDB.Count);
-        if (!avatarLink.Contains("https")) avatarLink = avatarDB[avatarID];
-        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
-
-        GameObject.Find("StartWorldCanvas/RoomName").GetComponent<Text>().text = $"Room: {PhotonNetwork.CurrentRoom.Name}";
+        GameObject.Find("StartWorldCanvas/RoomName").GetComponent<Text>().text = $"Welcome to <color=#91120A>ETT</color>!\n\nRoom: <b>{PhotonNetwork.CurrentRoom.Name}</b>\nPlayers: 1/9";
 
         //Hide template texts and cards
         foreach (GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
-
-    IEnumerator PlayStartAnimation()
+    private IEnumerator PlayStartAnimation()
     {
         yield return new WaitForSeconds(2);
         for (int i = 0; i < 16; i++)
@@ -149,6 +142,28 @@ public class Core : MonoBehaviourPun
             card.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
             Destroy(card.GetComponent<Rigidbody>(), 13);
         }
+    }
+
+    private void SetProfilePicture()
+    {
+        //scramble list
+        System.Random rnd = new System.Random();
+        avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToList();
+
+        //add discord avatar if available
+        if (avatarLink.Contains("https")) avatarDB.Add(avatarLink);
+
+        //set ID to character if saved, else random
+        if (avatarDB.Contains(PlayerPrefs.GetString("avatar", "")))
+        {
+            avatarID = avatarDB.IndexOf(avatarLink);
+        }
+        else
+        {
+            avatarID = UnityEngine.Random.Range(0, avatarDB.Count);
+        }
+        if (!avatarLink.Contains("https")) avatarLink = avatarDB[avatarID];
+        photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
     }
 
     /// <summary>
@@ -214,6 +229,7 @@ public class Core : MonoBehaviourPun
         string[] Players = namelist.Split('#');
         string[] Avatars = avatarlist.Split('#');
         GameObject.Find("Canvas/Players").GetComponent<Text>().text = $"Room: <b>{PhotonNetwork.CurrentRoom.Name}</b>\nPlayers ({Players.Length}):\n- <b>{string.Join("</b>\n- <b>", Players)}</b>";
+        GameObject.Find("StartWorldCanvas/RoomName").GetComponent<Text>().text = $"Welcome to <color=#91120A>ETT</color>!\n\nRoom: <b>{PhotonNetwork.CurrentRoom.Name}</b>\nPlayers: {Players.Length}/9";
 
         Stack.myID = Array.IndexOf(Players, PhotonNetwork.NickName);
         playerCount = Players.Length;
@@ -231,14 +247,7 @@ public class Core : MonoBehaviourPun
         }
     }
 
-    public void ChangeAvatar(int modifier)
-    {
-        avatarID += modifier;
-        if (avatarID == avatarDB.Count) avatarID = 0;
-        if (avatarID == -1) avatarID = avatarDB.Count - 1;
-        avatarLink = avatarDB[avatarID];
-        photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
-    }
+    
 
     [PunRPC]
     private void EditAvatarCall(string name, string avatar)
@@ -247,12 +256,12 @@ public class Core : MonoBehaviourPun
         dl.ChangeAlpha(GameObject.Find($"StartWorldCanvas/User ({PlayerList.IndexOf(name)})/Avatar").GetComponent<RawImage>(), avatar);
     }
 
-    #region Master
+    #region Pregame
 
     /// <summary>
     /// Starts the game for everyone
     /// </summary>
-    public void StartButton()
+    public void MStartButton()
     {
         //Picks a card that is a number
         Card first = FullDeck[UnityEngine.Random.Range(0, 108)];
@@ -260,6 +269,23 @@ public class Core : MonoBehaviourPun
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
         photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, Settings.placeMultipleCards);
     }
-
-    #endregion Master
+    /// <summary>
+    /// Cycles through the avatar list
+    /// </summary>
+    public void ChangeAvatar(int modifier)
+    {
+        if(modifier == 0)
+        {
+            avatarLink = discordLink;
+            PlayerPrefs.SetString("avatar", avatarLink);
+            photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
+        }
+        avatarID += modifier;
+        if (avatarID == avatarDB.Count) avatarID = 0;
+        if (avatarID == -1) avatarID = avatarDB.Count - 1;
+        avatarLink = avatarDB[avatarID];
+        PlayerPrefs.SetString("avatar", avatarLink);
+        photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
+    }
+    #endregion Pregame
 }

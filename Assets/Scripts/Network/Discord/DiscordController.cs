@@ -48,6 +48,7 @@ public class DiscordController : MonoBehaviour
     {
         Debug.Log(string.Format("RPC: connected to {0} {1}", connectedUser.userId, connectedUser.avatar));
         Core.avatarLink = $"https://cdn.discordapp.com/avatars/{connectedUser.userId}/{connectedUser.avatar}.png?size=256";
+        Core.discordLink = $"https://cdn.discordapp.com/avatars/{connectedUser.userId}/{connectedUser.avatar}.png?size=256";
         avatarFound = true;
         onConnect.Invoke();
 
