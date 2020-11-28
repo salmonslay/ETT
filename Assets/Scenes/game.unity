@@ -3512,10 +3512,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: User (6)
       objectReference: {fileID: 0}
-    - target: {fileID: 6876157462719121896, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
 --- !u!224 &364036653 stripped
@@ -14546,7 +14542,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 30
+  m_DynamicPixelsPerUnit: 100
 --- !u!223 &1484327042
 Canvas:
   m_ObjectHideFlags: 0
@@ -18784,10 +18780,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: User (7)
       objectReference: {fileID: 0}
-    - target: {fileID: 6876157462719121896, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
 --- !u!224 &1918269671 stripped
@@ -20629,7 +20621,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076096899}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -11.374}
+  m_LocalPosition: {x: 0, y: 0, z: -36.558}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1484327043}
@@ -20637,8 +20629,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19.1, y: -21.1}
-  m_SizeDelta: {x: 21.528538, y: 1.7105885}
+  m_AnchoredPosition: {x: 19.1, y: -3.411}
+  m_SizeDelta: {x: 14.764534, y: 6.773554}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2076096901
 MonoBehaviour:
@@ -20673,7 +20665,13 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Room: xsssssssssssssss'
+  m_Text: 'Welcome to ETT!sssssssssssssss
+
+    Room: {0}
+
+    Players: 0/9
+
+'
 --- !u!222 &2076096902
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -26104,10 +26102,6 @@ PrefabInstance:
     - target: {fileID: 6876157461554802172, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
       propertyPath: m_Name
       value: User (0)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6876157462719121896, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
-      propertyPath: m_Color.a
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8762dadd19c64746b752e343c62fd14, type: 3}
