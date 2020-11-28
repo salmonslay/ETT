@@ -51,7 +51,11 @@ public class Card : ScriptableObject
     /// <returns></returns>
     public static bool IsSecondMatch(Card inStack, Card queued)
     {
-        if (PlayBoard.currentColor == queued.Color)
+        //Number match
+        if (inStack.Type == CardProperties.Type.Number && queued.Type == CardProperties.Type.Number && inStack.number == queued.number)
+            return true;
+        //Types match (and is not number)
+        if (inStack.Type != CardProperties.Type.Number && inStack.Color != CardProperties.Color.Wild && inStack.Type == queued.Type)
             return true;
         return false;
     }
