@@ -113,6 +113,7 @@ public class Core : MonoBehaviourPun
     public Text textEtt;
 
     public bool started = false;
+    private bool rotateSky = true;
 
     [HideInInspector]
     public Download dl;
@@ -136,12 +137,13 @@ public class Core : MonoBehaviourPun
 
         GC = GetComponent<GameCore>();
     }
+
     private void Update()
     {
         if (SceneManager.GetActiveScene().name != "game") return;
 
         //rotate skybox
-        RenderSettings.skybox.SetFloat("_Rotation", Time.time*2);
+        if (rotateSky) RenderSettings.skybox.SetFloat("_Rotation", Time.time * 2);
     }
 
     private void Start()
@@ -170,6 +172,7 @@ public class Core : MonoBehaviourPun
             card.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
             Destroy(card.GetComponent<Rigidbody>(), 13);
         }
+        rotateSky = false;
     }
 
     private void SetProfilePicture()
