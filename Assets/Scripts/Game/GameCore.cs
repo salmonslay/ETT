@@ -69,7 +69,7 @@ public class GameCore : MonoBehaviourPun
         {
             newIndex = currentPlayerIndex - 1;
         }
-        else 
+        else
         {
             newIndex = currentPlayerIndex + 1;
         }

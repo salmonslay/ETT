@@ -37,7 +37,6 @@ public class CardBackground : MonoBehaviour
             c.transform.rotation = GameObject.Find(c.GetComponent<CardObject>().dest).transform.rotation;
             c.GetComponent<CardObject>().dest = "LEFT";
             c.GetComponent<CardObject>().menuFlip = false;
-
         }
     }
 }

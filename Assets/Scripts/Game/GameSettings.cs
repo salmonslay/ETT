@@ -1,6 +1,4 @@
 ﻿using Photon.Pun;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameSettings : MonoBehaviourPun
@@ -10,12 +8,11 @@ public class GameSettings : MonoBehaviourPun
 
     private void Start()
     {
-            t_placeMultipleCards.interactable = PhotonNetwork.IsMasterClient;
+        t_placeMultipleCards.interactable = PhotonNetwork.IsMasterClient;
     }
 
     private void Update()
     {
-        
     }
 
     public void SendMultiPlacement(bool allow)

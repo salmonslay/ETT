@@ -53,7 +53,7 @@ public class OwnStack : MonoBehaviourPun
             }
             //pick up card from stack
             //triggers by click on stack or B
-            else if((Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") || Input.GetKeyDown(KeyCode.B)) && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
+            else if ((Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") || Input.GetKeyDown(KeyCode.B)) && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
             {
                 pickFromStack++;
                 StartCoroutine(AddCards(1));
@@ -67,9 +67,7 @@ public class OwnStack : MonoBehaviourPun
         {
             Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
             Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1 && hasPut || pickFromStack > 2;
-
         }
-        
     }
 
     /// <summary>
@@ -304,7 +302,8 @@ public class OwnStack : MonoBehaviourPun
             photonView.RPC("PutCardAction", RpcTarget.All, hasPut);
         }
     }
-    IEnumerator SetEttText(string text)
+
+    private IEnumerator SetEttText(string text)
     {
         Core.textEtt.text = text;
         yield return new WaitForSeconds(2);
