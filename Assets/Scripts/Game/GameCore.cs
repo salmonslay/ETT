@@ -52,7 +52,7 @@ public class GameCore : MonoBehaviourPun
         for (int i = 1; i < Core.PlayerList.Count; i++)
         {
             GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/Text").GetComponent<Text>().text = $"{Core.PlayerList[i]} ({i})";
-            Core.dl.ChangeAlpha(GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/Image").GetComponent<RawImage>(), Core.AvatarList[i]);
+            Core.dl.ChangeAlpha(GameObject.Find($"OtherCards ({PlayOrder[i]})/Canvas/GameAvatar").GetComponent<RawImage>(), Core.AvatarList[i]);
             GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().name = Core.PlayerList[i];
             GameObject.Find($"OtherCards ({PlayOrder[i]})").GetComponent<Player>().destination = $"OtherCards ({PlayOrder[i]})";
         }

@@ -67,6 +67,7 @@ public class OwnStack : MonoBehaviourPun
         {
             Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
             Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1 && hasPut || pickFromStack > 2;
+
         }
         
     }
@@ -187,6 +188,19 @@ public class OwnStack : MonoBehaviourPun
         else
         {
             Core.GC.currentPlayerIndex = Core.GC.NextPlayer();
+        }
+
+        //Update particle indicator
+        for (int i = 0; i < 8; i++)
+        {
+            ParticleSystem.MainModule settings = GameObject.Find($"OtherCards ({i})/Canvas/GameAvatar/CurrentTurnParticles").GetComponent<ParticleSystem>().main;
+            settings.loop = false;
+        }
+        if (Core.GC.PlayOrder[Core.GC.currentPlayerIndex] != -1)
+        {
+            ParticleSystem.MainModule settings = GameObject.Find($"OtherCards ({Core.GC.PlayOrder[Core.GC.currentPlayerIndex]})/Canvas/GameAvatar/CurrentTurnParticles").GetComponent<ParticleSystem>().main;
+            settings.loop = true;
+            GameObject.Find($"OtherCards ({Core.GC.PlayOrder[Core.GC.currentPlayerIndex]})/Canvas/GameAvatar/CurrentTurnParticles").GetComponent<ParticleSystem>().Play();
         }
     }
 

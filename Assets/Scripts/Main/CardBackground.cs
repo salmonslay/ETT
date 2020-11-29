@@ -15,7 +15,9 @@ public class CardBackground : MonoBehaviour
         {
             c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
             GameObject card = Instantiate(Resources.Load("Prefabs/MainCard") as GameObject);
-            
+
+            card.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
             card.transform.position = new Vector3(Random.Range(0, -15), Random.Range(-20, 20), Random.Range(-10, -35));
             card.transform.rotation = Random.rotation;
             card.transform.localScale *= Random.Range(0.7f, 1.5f);

@@ -226,6 +226,14 @@ public class Core : MonoBehaviourPun
         buttonSkip.GetComponent<Animator>().Play("buttonIn");
         StartCoroutine(PlayStartAnimation());
         started = true;
+
+        //Set particles for first player
+        if (GC.PlayOrder[GC.currentPlayerIndex] != -1)
+        {
+            ParticleSystem.MainModule settings = GameObject.Find($"OtherCards ({GC.PlayOrder[GC.currentPlayerIndex]})/Canvas/GameAvatar/CurrentTurnParticles").GetComponent<ParticleSystem>().main;
+            settings.loop = true;
+            GameObject.Find($"OtherCards ({GC.PlayOrder[GC.currentPlayerIndex]})/Canvas/GameAvatar/CurrentTurnParticles").GetComponent<ParticleSystem>().Play();
+        }
     }
 
     /// <summary>
