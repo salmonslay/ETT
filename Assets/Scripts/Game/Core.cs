@@ -20,7 +20,7 @@ public class Core : MonoBehaviourPun
         "https://i.imgur.com/vLIRXTg.png", //kaguya how cute
         "https://i.imgur.com/WKqGA7e.png", //kei shirogane
         "https://i.imgur.com/wbxFM3t.png", //neko kaguya
-        "https://i.imgur.com/TZ6H4rP.png", //love detective chika 
+        "https://i.imgur.com/TZ6H4rP.png", //love detective chika
         "https://i.imgur.com/jttMhrE.png", //chika fujiwara vibe
         "https://i.imgur.com/ectZTsu.png", //chika fujiwara angry
         "https://i.imgur.com/4FINprO.png", //ryuk apple
@@ -136,6 +136,14 @@ public class Core : MonoBehaviourPun
 
         GC = GetComponent<GameCore>();
     }
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name != "game") return;
+
+        //rotate skybox
+        RenderSettings.skybox.SetFloat("_Rotation", Time.time*2);
+    }
+
     private void Start()
     {
         if (SceneManager.GetActiveScene().name != "game") return;
@@ -149,6 +157,7 @@ public class Core : MonoBehaviourPun
         foreach (GameObject c in GameObject.FindGameObjectsWithTag("TemplateCard")) c.transform.localScale = new Vector3(c.transform.localScale.x, 0, 0.00001f);
         foreach (GameObject t in GameObject.FindGameObjectsWithTag("PlayerName")) t.GetComponent<Text>().text = "";
     }
+
     private IEnumerator PlayStartAnimation()
     {
         yield return new WaitForSeconds(2);
@@ -170,17 +179,10 @@ public class Core : MonoBehaviourPun
         avatarDB = avatarDB.OrderBy(x => rnd.Next()).ToList();
 
         //add discord avatar if available
-        if (avatarLink.Contains("https")) avatarDB.Add(avatarLink);
+        if (discordLink.Contains("https")) avatarDB.Add(avatarLink);
 
-        //set ID to character if saved, else random
-        if (avatarDB.Contains(PlayerPrefs.GetString("avatar", "")))
-        {
-            avatarID = avatarDB.IndexOf(avatarLink);
-        }
-        else
-        {
-            avatarID = UnityEngine.Random.Range(0, avatarDB.Count);
-        }
+        avatarID = UnityEngine.Random.Range(0, avatarDB.Count);
+
         if (!avatarLink.Contains("https")) avatarLink = avatarDB[avatarID];
         photonView.RPC("AddPlayer", RpcTarget.MasterClient, PhotonNetwork.NickName, avatarLink);
     }
@@ -274,8 +276,6 @@ public class Core : MonoBehaviourPun
         }
     }
 
-    
-
     [PunRPC]
     private void EditAvatarCall(string name, string avatar)
     {
@@ -296,12 +296,13 @@ public class Core : MonoBehaviourPun
         photonView.RPC("DownloadPlayerlist", RpcTarget.All, string.Join("#", PlayerList.ToArray()), string.Join("#", AvatarList.ToArray()));
         photonView.RPC("ConfigureGame", RpcTarget.All, first.ID, PhotonNetwork.NickName, GameSettings.placeMultipleCards);
     }
+
     /// <summary>
     /// Cycles through the avatar list
     /// </summary>
     public void ChangeAvatar(int modifier)
     {
-        if(modifier == 0)
+        if (modifier == 0)
         {
             avatarLink = discordLink;
             PlayerPrefs.SetString("avatar", avatarLink);
@@ -314,5 +315,6 @@ public class Core : MonoBehaviourPun
         PlayerPrefs.SetString("avatar", avatarLink);
         photonView.RPC("EditAvatarCall", RpcTarget.All, PhotonNetwork.NickName, avatarLink);
     }
+
     #endregion Pregame
 }
