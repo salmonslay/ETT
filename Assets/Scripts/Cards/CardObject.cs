@@ -55,7 +55,7 @@ public class CardObject : MonoBehaviour
             if (SceneManager.GetActiveScene().name == "main" && transform.position.x < -44.56) transform.position = new Vector3(52.35f, transform.position.y, transform.position.z);
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x - 10f, destObj.position.y, destObj.position.z), 2f * Time.deltaTime);
 
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(-180, menuFlip ? 0 : -180, -180), 4 * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(-180, menuFlip ? 0 : -180, -180), 2.5f * Time.deltaTime);
 
             if (Random.Range(0, 13000) == 666) menuFlip = !menuFlip;
         }
