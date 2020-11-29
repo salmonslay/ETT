@@ -25,26 +25,16 @@ public class CardBackground : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("LEFT") && move)
-            {
-                hit.transform.gameObject.GetComponent<CardObject>().menuFlip = !hit.transform.gameObject.GetComponent<CardObject>().menuFlip;
-            }
-        }
-    }
-
     private IEnumerator StartMoving()
     {
-        yield return new WaitForSeconds(5.2f);
+        yield return new WaitForSeconds(5.1f);
         move = true;
         foreach (GameObject c in GameObject.FindGameObjectsWithTag("LEFT"))
         {
             c.transform.position = GameObject.Find(c.GetComponent<CardObject>().dest).transform.position;
             c.transform.rotation = GameObject.Find(c.GetComponent<CardObject>().dest).transform.rotation;
             c.GetComponent<CardObject>().dest = "LEFT";
+            c.GetComponent<CardObject>().menuFlip = false;
 
         }
     }

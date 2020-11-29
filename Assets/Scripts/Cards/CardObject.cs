@@ -11,10 +11,11 @@ public class CardObject : MonoBehaviour
 
     //Stack offsets
     private Vector3 stackPos;
+
     private Vector3 stackSize;
     private Quaternion stackRotation;
 
-    public bool menuFlip = false;
+    public bool menuFlip = true;
     public bool destroyIfTouch = false;
 
     //Card props
@@ -49,19 +50,18 @@ public class CardObject : MonoBehaviour
                 dest = "NONE";
             }
         }
-        else if(dest == "LEFT")
-        {   
+        else if (dest == "LEFT")
+        {
             if (SceneManager.GetActiveScene().name == "main" && transform.position.x < -44.56) transform.position = new Vector3(52.35f, transform.position.y, transform.position.z);
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x - 10f, destObj.position.y, destObj.position.z), 2f * Time.deltaTime);
 
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(-180, menuFlip ? 0 : -180, -180), 4 * Time.deltaTime);
 
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(-180, menuFlip ? 0 : -180, -180), 2 * Time.deltaTime);
-            
+            if (Random.Range(0, 13000) == 666) menuFlip = !menuFlip;
         }
         else //move to card pos
         {
-            if(GameObject.Find(dest)) destObj = GameObject.Find(dest).transform;
-            
+            if (GameObject.Find(dest)) destObj = GameObject.Find(dest).transform;
 
             transform.position = Vector3.MoveTowards(transform.position, destObj.position, speed * 11.7f * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, destObj.rotation, speed * (SceneManager.GetActiveScene().name == "main" ? 0.6f : 1.6f) * Time.deltaTime);
@@ -71,6 +71,7 @@ public class CardObject : MonoBehaviour
             else speed = Random.Range(1.3f, 1.5f);
         }
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (destroyIfTouch) Destroy(gameObject);
