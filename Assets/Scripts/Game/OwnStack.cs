@@ -165,7 +165,6 @@ public class OwnStack : MonoBehaviourPun
     [PunRPC]
     public void PutCardAction(bool run)
     {
-        Core.textEtt.gameObject.SetActive(false);
         hasPut = false;
         pickFromStack = 0;
         Card card = Core.GC.currentTop;
@@ -248,6 +247,7 @@ public class OwnStack : MonoBehaviourPun
 
     public void ETT()
     {
+        Core.buttonEtt.interactable = false;
         if (hasEtt)
         {
             hasEtt = false;
@@ -268,12 +268,12 @@ public class OwnStack : MonoBehaviourPun
         if (success)
         {
             Core.textEtt.color = new Color(0.1168802f, 0.9339623f, 0.08370414f);
-            Core.textEtt.text = $"{name} has Ett!";
+            StartCoroutine(SetEttText($"{name} has Ett!"));
         }
         else
         {
             Core.textEtt.color = Color.red;
-            Core.textEtt.text = $"{name} tried to claim Ett!";
+            StartCoroutine(SetEttText($"{name} tried to claim Ett!"));
         }
     }
 
@@ -283,11 +283,17 @@ public class OwnStack : MonoBehaviourPun
         {
             StartCoroutine(AddCards(2));
             hasEtt = false;
-            Core.textEtt.text = $"{name} forgot to claim Ett!";
+            StartCoroutine(SetEttText($"{name} forgot to claim Ett!"));
         }
         else if (hasPut || pickFromStack > 2)
         {
             photonView.RPC("PutCardAction", RpcTarget.All, hasPut);
         }
+    }
+    IEnumerator SetEttText(string text)
+    {
+        Core.textEtt.text = text;
+        yield return new WaitForSeconds(2);
+        Core.textEtt.text = "";
     }
 }
