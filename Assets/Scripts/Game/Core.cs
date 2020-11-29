@@ -15,6 +15,25 @@ public class Core : MonoBehaviourPun
 
     public static List<string> avatarDB = new List<string>()
     {
+        "https://i.imgur.com/4xioGcD.png", //miu amano
+        "https://i.imgur.com/1zYEC36.png", //hideri
+        "https://i.imgur.com/vLIRXTg.png", //kaguya how cute
+        "https://i.imgur.com/WKqGA7e.png", //kei shirogane
+        "https://i.imgur.com/wbxFM3t.png", //neko kaguya
+        "https://i.imgur.com/TZ6H4rP.png", //love detective chika 
+        "https://i.imgur.com/jttMhrE.png", //chika fujiwara vibe
+        "https://i.imgur.com/ectZTsu.png", //chika fujiwara angry
+        "https://i.imgur.com/4FINprO.png", //ryuk apple
+        "https://i.imgur.com/2e6QRSr.png", //chika fujiwara
+        "https://i.imgur.com/dqmMGer.png", //yuzu aihara
+        "https://i.imgur.com/OkWmsw8.png", //yuzu aihara
+        "https://i.imgur.com/tCQDJEo.png", //kaede azusagawa
+        "https://i.imgur.com/a3HkH8H.png", //mutsu amatani
+        "https://i.imgur.com/aKDbiO7.png", //homare onishima
+        "https://i.imgur.com/tlvMsrB.png", //tomoe koga
+        "https://i.imgur.com/hPQapW3.png", //cynthia
+        "https://i.imgur.com/zBZoxEk.png", //laurent
+        "https://i.imgur.com/DBDUogO.png", //adachi
         "https://i.imgur.com/Mf8lU04.png", //pico
         "https://i.imgur.com/o0P47Fa.png", //mio honda
         "https://i.imgur.com/X2BJoSu.png", //kanna kamui eating
