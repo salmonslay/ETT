@@ -26,10 +26,11 @@ public class OwnStack : MonoBehaviourPun
 
     private void Update()
     {
+        bool myTurn = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
         if (Input.GetMouseButtonDown(0))
         {
             //put card on board
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") && oldPos == null && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit) && hit.transform.CompareTag("MyCard") && oldPos == null && myTurn)
             {
                 CardObject g = hit.transform.gameObject.GetComponent<CardObject>();
                 if (hasPut && !GameSettings.placeMultipleCards) return;
@@ -53,7 +54,7 @@ public class OwnStack : MonoBehaviourPun
             }
             //pick up card from stack
             //triggers by click on stack or B
-            else if ((Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") || Input.GetKeyDown(KeyCode.B)) && Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1)
+            else if ((Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit2) && hit2.transform.CompareTag("CardStack") || Input.GetKeyDown(KeyCode.B)) && myTurn)
             {
                 pickFromStack++;
                 StartCoroutine(AddCards(1));
@@ -65,7 +66,6 @@ public class OwnStack : MonoBehaviourPun
         if (Input.GetMouseButtonDown(0)) Core.textEtt.gameObject.SetActive(false);
         if (Core.started)
         {
-            bool myTurn = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
             Core.buttonEtt.interactable = myTurn;
             Core.buttonSkip.interactable = myTurn && hasPut || pickFromStack > 2;
             Core.textTurn.gameObject.SetActive(myTurn);
