@@ -111,6 +111,7 @@ public class Core : MonoBehaviourPun
     public Button buttonSkip;
     public Button buttonEtt;
     public Text textEtt;
+    public Text textTurn;
 
     public bool started = false;
     private bool rotateSky = true;
@@ -134,8 +135,6 @@ public class Core : MonoBehaviourPun
             }
         }
         if (SceneManager.GetActiveScene().name != "game") return;
-
-        GC = GetComponent<GameCore>();
     }
 
     private void Update()
@@ -149,6 +148,7 @@ public class Core : MonoBehaviourPun
     private void Start()
     {
         if (SceneManager.GetActiveScene().name != "game") return;
+        textTurn.gameObject.SetActive(false);
         dl = Download.Init();
         GameObject.Find("Canvas/AvatarChange/AvatarButtonClear").GetComponent<Button>().interactable = discordLink.Contains("https");
         SetProfilePicture();

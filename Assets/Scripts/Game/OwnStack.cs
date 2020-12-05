@@ -65,8 +65,10 @@ public class OwnStack : MonoBehaviourPun
         if (Input.GetMouseButtonDown(0)) Core.textEtt.gameObject.SetActive(false);
         if (Core.started)
         {
-            Core.buttonEtt.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
-            Core.buttonSkip.interactable = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1 && hasPut || pickFromStack > 2;
+            bool myTurn = Core.GC.PlayOrder[Core.GC.currentPlayerIndex] == -1;
+            Core.buttonEtt.interactable = myTurn;
+            Core.buttonSkip.interactable = myTurn && hasPut || pickFromStack > 2;
+            Core.textTurn.gameObject.SetActive(myTurn);
         }
     }
 
