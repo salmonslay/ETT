@@ -26,4 +26,9 @@ public class Settings : MonoBehaviour
             }
         }
     }
+    private void OnApplicationQuit()
+    {
+        //reset sky rotation
+        RenderSettings.skybox.SetFloat("_Rotation", 0);
+    }
 }
